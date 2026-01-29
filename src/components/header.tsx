@@ -16,11 +16,11 @@ export function Header() {
 	const navItems = config.navItems;
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b border-border">
+    <header className="sticky top-0 z-50 bg-primary backdrop-blur supports-backdrop-filter:bg-primary/95 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 text-primary-foreground">
             <Logo />
             <span className="font-semibold text-lg tracking-tight">{config.title}</span>
           </Link>
@@ -31,7 +31,7 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-primary-foreground hover:text-secondary transition-colors"
               >
                 {item.label}
               </Link>
