@@ -2,6 +2,16 @@ import Link from 'next/link';
 import { getPosts } from '@/lib/mdx';
 import { CustomMDX } from '@/components/mdx-components';
 import { getPostBySlug } from '@/lib/mdx';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Briefcase, AlertCircle, Building2, LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+// Map frontmatter icon names to Lucide components (add to this as you add more icons in MDX)
+const iconMap: Record<string, LucideIcon> = {
+  Briefcase,
+  AlertCircle,
+  Building2,
+};
 
 export default function Home() {
   const posts = getPosts();
@@ -18,29 +28,48 @@ export default function Home() {
         )}
 
         <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Seiten</h2>
-          <div className="grid gap-4">
+          <h2 className="text-2xl font-bold mb-6">Rechtsgebiete</h2>
+					<div className="grid gap-6 md:grid-cols-2">
+          
+        </div>
+
+
+
+          <div className="grid gap-6 md:grid-cols-2">
             {posts
-              .filter((post) => post.slug !== 'home')
-              .map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/${post.slug}`}
-                  className="block p-6 border rounded-lg hover:bg-accent transition-colors"
-                >
-                  <h3 className="text-xl font-semibold mb-2">
-                    {post.metadata.title}
-                  </h3>
-                  {post.metadata.description && (
-                    <p className="text-muted-foreground">
-                      {post.metadata.description}
-                    </p>
-                  )}
-                </Link>
-              ))}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+              .filter((post) => !['home', 'impressum', 'datenschutz'].includes(post.slug))
+              .map((post) => {
+								const iconName = post.metadata.icon; // string | undefined
+								const IconComponent = iconName ? iconMap[iconName] : null;
+								
+								return (<Card 
+									key={post.slug}
+									className="group hover:border-secondary transition-colors scroll-mt-24"
+								>
+									<Link href={`/${post.slug}`}>
+									<CardHeader>
+										<div className="flex items-start gap-4">
+											<div className="p-3 bg-secondary rounded-lg">
+                      {IconComponent ? (
+                        <IconComponent className="h-6 w-6 text-foreground" />
+                      ) : null}
+											</div>
+											<div className="flex-1">
+												<CardTitle className="text-xl mb-2">{post.metadata.title}</CardTitle>
+												
+											</div>
+										</div>
+									</CardHeader>
+									<CardContent className="text-base leading-relaxed">
+													{post.metadata.description}
+												</CardContent>
+									</Link>
+								</Card>
+							)
+						})}
+					</div>
+				</section>
+			</div>
+		</div>
+	);
 }

@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "@/lib/styles/globals.css";
-import { Nav } from "@/components/nav";
+
+
+import { cn } from "@/lib/utils/cn";
+import {Header} from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ThemeProvider } from "@/components/theme-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import "@/lib/styles/globals.css";
+import { sans, serif, mono } from '@/lib/styles/fonts'
 
 export const metadata: Metadata = {
   title: "MS Kanzlei",
@@ -25,13 +20,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+				className={cn(
+					'bg-background h-full min-h-screen font-sans antialiased',
+					sans.variable,
+					serif.variable,
+					mono.variable,
+				)}
       >
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+        <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
