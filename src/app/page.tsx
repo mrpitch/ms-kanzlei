@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { getPosts } from '@/lib/mdx';
 import { CustomMDX } from '@/components/mdx-components';
 import { getPostBySlug } from '@/lib/mdx';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Briefcase, AlertCircle, Building2, LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+
 
 // Map frontmatter icon names to Lucide components (add to this as you add more icons in MDX)
 const iconMap: Record<string, LucideIcon> = {
