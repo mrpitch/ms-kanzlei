@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote/rsc';
 import { ComponentPropsWithoutRef } from 'react';
+import { HeroSection } from '@/components/hero';
 
 function CustomLink(props: ComponentPropsWithoutRef<'a'>) {
   const href = props.href;
@@ -26,6 +27,7 @@ function CustomLink(props: ComponentPropsWithoutRef<'a'>) {
 
 const components = {
   a: CustomLink,
+  HeroSection,
 };
 
 export function CustomMDX(props: MDXRemoteProps) {

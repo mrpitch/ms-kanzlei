@@ -1,0 +1,49 @@
+{
+	"title": "MS Kanzlei",
+	"description": "Ihre erfahrene Anwaltskanzlei für Arbeitsrecht, Insolvenzrecht, Gesellschaftsrecht und Mietrecht. Wir setzen uns mit Engagement und Fachkompetenz für Ihre Interessen ein.",
+	"navItems": [
+		{
+			"href": "/arbeitsrecht",
+			"label": "Arbeitsrecht"
+		},
+		{
+			"href": "/insolvenzrecht",
+			"label": "Insolvenzrecht"
+		},
+		{
+			"href": "/mietrecht",
+			"label": "Mietrecht"
+		},
+		{
+			"href": "/gesellschaftsrecht",
+			"label": "Gesellschaftsrecht"
+		}
+	],
+	"legalNavItems": [
+		{
+			"href": "/impressum",
+			"label": "Impressum"
+		},
+		{
+			"href": "/datenschutz",
+			"label": "Datenschutz"
+		}
+	],
+	"contact": {
+		"phone": "+491234567890",
+		"email": "info@ms-kanzlei.de",
+		"street": "Schleißheimerstraße 129",
+		"zip": "80797",
+		"city": "München-Schwabing"
+	},
+	"testimonials": [
+		{
+			"name": "Mark Schilling",
+			"title": "Rechtsanwalt",
+			"company": "MS Kanzlei",
+			"companyUrl": "https://ms-kanzlei.de",
+			"text": "Gravida quam mi erat tortor neque molestie. Auctor aliquet at porttitor a enim nunc suscipit tincidunt nunc. Et non lorem tortor posuere. Nunc eu scelerisque interdum eget tellus non nibh scelerisque bibendum.",
+			"image": "/images/rechtsanwalt-mark-schilling.jpg"
+		}
+	]
+}
