@@ -12,6 +12,8 @@ MS Kanzlei is a German law firm website built with Next.js 16, using static expo
 pnpm dev          # Start development server
 pnpm build        # Build for production (includes image optimization)
 pnpm start        # Serve the static export from ./out
+pnpm test:e2e     # Run Playwright e2e tests (webServer in config builds and serves app)
+pnpm test:e2e:ui  # Run Playwright e2e tests in UI mode for debugging
 pnpm lint         # Run ESLint
 pnpm format       # Format code with Prettier
 pnpm nuke         # Remove node_modules, lock file, .next, and out directories
@@ -57,6 +59,10 @@ pnpm nuke         # Remove node_modules, lock file, .next, and out directories
 @/lib/*       → ./src/lib/*
 @/img/*       → ./public/img/*
 ```
+
+### Playwright MCP
+
+The project uses Playwright MCP via `.cursor/mcp.json` so the agent can drive a browser (navigate, snapshot, interact) and help author e2e tests. Restart Cursor after changing MCP config. With the app running (`pnpm dev` or `pnpm start`), the agent can open e.g. `http://localhost:3000` and use testing tools (e.g. generate locators, verify visibility). Browsers are shared with Playwright Test; run `pnpm exec playwright install chromium` if the MCP reports browsers not installed.
 
 ## Key Files
 
