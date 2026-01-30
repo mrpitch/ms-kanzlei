@@ -57,7 +57,7 @@ export default async function Page({
 	return (
 		<Container as="article" className="mt-12">
 			{/* Hero intro section */}
-			<div className="mb-12 pb-8 border-b">
+			<div className="mb-12 pb-8 border-b border-border">
 				<div className="flex items-start gap-6">
 					{IconComponent && (
 						<div className="p-4 bg-secondary rounded-xl shrink-0">
@@ -65,11 +65,11 @@ export default async function Page({
 						</div>
 					)}
 					<div className="flex-1">
-						<h1 className="text-4xl font-bold tracking-tight mb-4">
+						<h1 className="text-4xl md:text-5xl font-bold font-serif tracking-tight mb-4">
 							{post.metadata.title}
 						</h1>
 						{post.metadata.description && (
-							<p className="text-xl text-muted-foreground leading-relaxed">
+							<p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
 								{post.metadata.description}
 							</p>
 						)}
@@ -78,7 +78,7 @@ export default async function Page({
 			</div>
 
 			{/* MDX content */}
-			<div className="text-lg prose prose-neutral dark:prose-invert max-w-none">
+			<div className="text-lg prose prose-neutral dark:prose-invert max-w-none prose-headings:font-serif prose-headings:tracking-tight prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4">
 				<CustomMDX source={post.content} />
 			</div>
 		</Container>

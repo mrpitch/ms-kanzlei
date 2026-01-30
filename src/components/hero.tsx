@@ -9,18 +9,18 @@ export function HeroSection({ headline, subline, tagline }: { headline?: string,
 	const config: TConfig = configJson as TConfig;
 	const contact = config.contact;
 	return (
-		<div className="relative bg-background">
+		<div className="relative bg-linear-to-br from-background via-background to-secondary/20">
 			<Container className="py-16 md:py-24 lg:py-32">
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
 					{/* Left Column - Text Content */}
-					<div className="text-center lg:text-left mx-automax-w-xl">
+					<div className="text-center lg:text-left mx-auto max-w-xl">
 						{tagline && (
 							<p className="text-lg font-medium text-primary tracking-widest mb-6">
 								{tagline}
 							</p>
 						)}
 
-						<h1 className="text-priimary text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] mb-6">
+						<h1 className="text-primary text-4xl md:text-5xl lg:text-6xl font-bold font-serif tracking-tight leading-[1.1] mb-6">
 							{headline}
 						</h1>
 
