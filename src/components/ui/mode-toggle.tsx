@@ -10,9 +10,9 @@ export function ModeToggle() {
   const { setTheme, theme } = useTheme()
 
   return (
-    <Button variant="outline" size="icon" type="button"
+    <Button variant="secondary" size="icon" type="button"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-md hover:bg-accent transition-colors cursor-pointer"
+      className="p-2 rounded-md transition-colors cursor-pointer"
       aria-label="Theme wechseln"
     >
       {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}

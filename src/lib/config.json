@@ -35,5 +35,15 @@
 		"street": "Schleißheimerstraße 129",
 		"zip": "80797",
 		"city": "München-Schwabing"
-	}
+	},
+	"testimonials": [
+		{
+			"name": "Mark Schilling",
+			"title": "Rechtsanwalt",
+			"company": "MS Kanzlei",
+			"companyUrl": "https://ms-kanzlei.de",
+			"text": "Gravida quam mi erat tortor neque molestie. Auctor aliquet at porttitor a enim nunc suscipit tincidunt nunc. Et non lorem tortor posuere. Nunc eu scelerisque interdum eget tellus non nibh scelerisque bibendum.",
+			"image": "/images/rechtsanwalt-mark-schilling.jpg"
+		}
+	]
 }
