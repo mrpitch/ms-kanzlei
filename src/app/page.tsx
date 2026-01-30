@@ -5,13 +5,14 @@ import { getPostBySlug } from '@/lib/mdx';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import Testimonial from '@/components/testimonial';
-import { Briefcase, AlertCircle, Building2, LucideIcon } from 'lucide-react';
+import { Briefcase, AlertCircle, Building2, Home as HomeIcon, LucideIcon } from 'lucide-react';
 
 // Map frontmatter icon names to Lucide components (add to this as you add more icons in MDX)
 const iconMap: Record<string, LucideIcon> = {
 	Briefcase,
 	AlertCircle,
 	Building2,
+	Home: HomeIcon,
 };
 
 export default function Home() {

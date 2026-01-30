@@ -15,12 +15,12 @@ export function HeroSection({ headline, subline, tagline }: { headline?: string,
 					{/* Left Column - Text Content */}
 					<div className="text-center lg:text-left mx-automax-w-xl">
 						{tagline && (
-							<p className="text-sm font-medium text-muted-foreground uppercase tracking-widest mb-6">
+							<p className="text-lg font-medium text-primary tracking-widest mb-6">
 								{tagline}
 							</p>
 						)}
 
-						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
+						<h1 className="text-priimary text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] mb-6">
 							{headline}
 						</h1>
 
@@ -30,12 +30,12 @@ export function HeroSection({ headline, subline, tagline }: { headline?: string,
 					</div>
 
 					{/* Right Column - Contact Card */}
-					<div className="lg:justify-self-end w-full max-w-sm">
+					<div className="lg:justify-self-end w-full lg:max-w-sm">
 						<Card>
 							<CardHeader>
-								<CardTitle>Kontakt</CardTitle>
+								<CardTitle className="text-primary text-2xl font-bold">Kontakt</CardTitle>
 							</CardHeader>
-							<CardContent className="flex flex-col gap-5">
+							<CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
 								<a
 									href={`tel:${contact.phone}`}
 									className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors group"

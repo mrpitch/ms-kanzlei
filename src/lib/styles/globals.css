@@ -55,8 +55,16 @@
   }
 
 /* Ensure smooth scrolling for TOC navigation */
+/* scroll-padding-top accounts for sticky header height (h-16 mobile, md:h-20 desktop) */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4rem; /* 64px for mobile */
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 7rem; /* 128px for desktop - extra breathing room */
+  }
 }
 /*---break---*/
 :root {

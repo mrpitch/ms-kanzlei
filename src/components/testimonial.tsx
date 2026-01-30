@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils/cn"
 import configJson from '@/lib/config.json';
 import { TConfig } from '@/lib/types';
 
+import Picture from 'next-export-optimize-images/picture'
+
+
+
 // Color variants for the main wrapper
 const testimonialColorVariants = cva("", {
 	variants: {
@@ -202,10 +206,11 @@ export default function Testimonial({ variant, size, className }: TestimonialPro
 					<div className={testimonialContainerSizeVariants({ size })}>
 						<div className={testimonialImageWrapperSizeVariants({ size })}>
 							<div className={testimonialImageAspectSizeVariants({ size })}>
-								<img
-									alt={testimonial.name}
+								<Picture
 									src={testimonial.image}
-									className="absolute inset-0 size-full rounded-2xl bg-muted object-cover shadow-2xl"
+									alt={testimonial.name}
+									fill
+									className="rounded-2xl bg-muted object-cover shadow-2xl"
 								/>
 							</div>
 						</div>

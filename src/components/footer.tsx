@@ -13,9 +13,9 @@ export function Footer() {
 	const legalNavItems = config.legalNavItems;
 	const contact = config.contact;
 	return (
-		<footer className="bg-background text-foreground border-t border-border mt-16 md:mt-24 lg:mt-32">
+		<footer className="bg-background text-foreground border-t border-border mt-12 md:mt-16 lg:mt-20">
 			{/* Main Footer */}
-			<Container as="footer" className="py-16 md:py-20">
+			<Container as="footer" className="py-12 md:py-16 lg:py-20">
 				<div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
 					{/* Brand & Description */}
 					<div className="lg:col-span-2">
@@ -79,11 +79,11 @@ export function Footer() {
 
 			{/* Copyright */}
 			<div className="container mx-auto px-4 py-6">
-				<div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
+				<div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-foreground/60">
 					<p>© {new Date().getFullYear()} {config.title}. Alle Rechte vorbehalten.</p>
 					<div className="flex gap-6">
 						{legalNavItems.map((item) => (
-							<Link key={item.href} href={item.href} className="hover:text-primary-foreground transition-colors">
+							<Link key={item.href} href={item.href} className="hover:text-foreground transition-colors">
 								{item.label}
 							</Link>
 						))}

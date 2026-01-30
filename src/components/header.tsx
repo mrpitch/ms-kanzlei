@@ -22,8 +22,7 @@ export function Header() {
 				<div className="flex items-center justify-between h-16 md:h-20">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-2 text-foreground">
-						<Logo />
-						<span className="font-semibold text-lg tracking-tight">{config.title}</span>
+						<Logo name={config.title} />
 					</Link>
 
 					{/* Desktop Navigation */}
