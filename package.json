@@ -10,7 +10,9 @@
 		"format": "prettier --write .",
 		"typecheck": "tsc --noEmit",
 		"lint": "eslint",
-		"check": "pnpm lint && pnpm typecheck"
+		"check": "pnpm lint && pnpm typecheck",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui"
 	},
 	"dependencies": {
 		"@radix-ui/react-collapsible": "^1.1.12",
@@ -32,6 +34,7 @@
 		"tailwind-merge": "^3.4.0"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.58.0",
 		"@tailwindcss/postcss": "^4",
 		"@tailwindcss/typography": "^0.5.19",
 		"@types/node": "^20",
