@@ -7,6 +7,13 @@
         "--caps=testing",
         "--allowed-hosts=*"
       ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     }
   }
 }

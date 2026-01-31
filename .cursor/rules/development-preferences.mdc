@@ -1,0 +1,567 @@
+---
+description: Complete development preferences and coding guidelines for the Payload CMS + Next.js playground project
+globs: **/*
+alwaysApply: true
+---
+
+# Development Preferences & Coding Guidelines
+
+This document outlines the complete development preferences, coding standards, and best practices for the Payload CMS + Next.js playground project.
+
+## Core Development Principles
+
+### **Primary Guidelines**
+- Follow user requirements carefully & to the letter
+- Think step-by-step: describe plan in pseudocode with great detail
+- Confirm approach, then write code
+- Write correct, best practice, DRY principle, bug-free, fully functional code
+- Focus on readability over performance
+- Fully implement all requested functionality
+- Leave NO todos, placeholders, or missing pieces
+- Ensure code is complete and thoroughly verified
+- Include all required imports and proper component naming
+- Be concise and minimize prose
+- If uncertain, say so instead of guessing
+
+## Technology Stack & Versions
+
+### **Core Technologies**
+- **Next.js 15** - App Router, Server Components
+- **React 19.0.0** - Latest with Actions, use(), new features
+- **TypeScript** - Strict typing, interfaces over types
+- **Tailwind CSS v4** - Latest major version (beta)
+- **Payload CMS 3.50.0** - Latest stable version
+
+### **UI & Styling**
+- **Shadcn UI** - Component library
+- **Radix UI** - Headless components
+- **Tailwind CSS** - Utility-first styling
+- **React Email** - Email templates
+
+### **State & Data**
+- **Zustand** - State management
+- **TanStack React Query** - Data fetching and caching
+- **Zod** - Schema validation and type inference
+
+### **Infrastructure**
+- **pnpm** - Package manager
+- **Turbo** - Monorepo management
+- **Vercel** - Deployment platform
+- **AWS S3/CloudFront** - File storage and CDN
+- **Supabase** - Backend services
+
+## Code Style & Structure
+
+### **TypeScript Guidelines**
+```typescript
+// ✅ Good: Use interfaces for object shapes
+interface TUserProps {
+  id: string
+  name: string
+  email: string
+}
+
+// ✅ Good: Type naming convention
+type TUserRole = 'admin' | 'editor' | 'user'
+
+// ❌ Bad: Avoid enums, use literal types
+enum UserRole {
+  ADMIN = 'admin',
+  EDITOR = 'editor'
+}
+```
+
+### **Component Structure**
+```typescript
+// ✅ Good: Functional components with TypeScript
+interface TButtonProps {
+  variant: 'primary' | 'secondary'
+  children: React.ReactNode
+  onClick?: () => void
+}
+
+export function Button({ variant, children, onClick }: TButtonProps) {
+  return (
+    <button 
+      className={`btn btn-${variant}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+}
+
+// Subcomponents
+function ButtonIcon({ icon }: { icon: string }) {
+  return <span className="icon">{icon}</span>
+}
+
+// Helpers
+function getButtonClasses(variant: string): string {
+  return `btn btn-${variant}`
+}
+
+// Static content
+const BUTTON_VARIANTS = ['primary', 'secondary'] as const
+```
+
+### **Naming Conventions**
+- **Directories**: `kebab-case` (e.g., `components/auth-wizard`)
+- **Files**: `kebab-case.tsx` for components
+- **Types**: `T{DescriptiveName}` (e.g., `TUserProps`, `TApiResponse`)
+- **Variables**: Descriptive with auxiliary verbs (`isLoading`, `hasError`)
+- **Functions**: Use `function` keyword for pure functions
+- **Exports**: Favor named exports for components
+
+## React & Next.js Best Practices
+
+### **Server Components First**
+```typescript
+// ✅ Good: Server Component (default)
+export default function UserProfile({ userId }: { userId: string }) {
+  const user = await getUser(userId) // Server-side data fetching
+  
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <UserAvatar user={user} />
+    </div>
+  )
+}
+
+// ✅ Good: Client Component only when needed
+'use client'
+export function InteractiveButton() {
+  const [count, setCount] = useState(0)
+  
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+```
+
+### **Data Fetching Patterns**
+```typescript
+// ✅ Good: Server-side data fetching
+async function getUsers(): Promise<TUser[]> {
+  const response = await fetch('/api/users')
+  return response.json()
+}
+
+// ✅ Good: Client-side with React Query
+function useUsers() {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+```
+
+### **Error Handling**
+```typescript
+// ✅ Good: Early returns and guard clauses
+function processUser(user: TUser | null): string {
+  if (!user) {
+    return 'No user provided'
+  }
+  
+  if (!user.email) {
+    return 'User email is required'
+  }
+  
+  // Process user
+  return `Processing ${user.email}`
+}
+
+// ✅ Good: Custom error types
+class TValidationError extends Error {
+  constructor(message: string, public field: string) {
+    super(message)
+    this.name = 'ValidationError'
+  }
+}
+```
+
+## UI & Styling Guidelines
+
+### **Tailwind CSS Patterns**
+```typescript
+// ✅ Good: Mobile-first responsive design
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {items.map(item => (
+    <Card key={item.id} className="p-4 hover:shadow-lg transition-shadow">
+      {item.content}
+    </Card>
+  ))}
+</div>
+
+// ✅ Good: Component variants with CVA
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      },
+      size: {
+        sm: "h-9 px-3",
+        md: "h-10 px-4 py-2",
+        lg: "h-11 px-8",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+    },
+  }
+)
+```
+
+### **Accessibility Standards**
+```typescript
+// ✅ Good: WCAG 2.1 Level AA compliance
+<button
+  aria-label="Close dialog"
+  aria-expanded={isOpen}
+  onClick={handleClose}
+  className="sr-only focus:not-sr-only"
+>
+  <CloseIcon aria-hidden="true" />
+</button>
+
+// ✅ Good: Semantic HTML
+<main>
+  <section aria-labelledby="user-profile-heading">
+    <h2 id="user-profile-heading">User Profile</h2>
+    <form role="form" aria-label="Update profile">
+      {/* Form content */}
+    </form>
+  </section>
+</main>
+```
+
+## State Management
+
+### **Zustand Patterns**
+```typescript
+// ✅ Good: Type-safe store
+interface TUserStore {
+  user: TUser | null
+  isLoading: boolean
+  setUser: (user: TUser | null) => void
+  setLoading: (loading: boolean) => void
+}
+
+export const useUserStore = create<TUserStore>((set) => ({
+  user: null,
+  isLoading: false,
+  setUser: (user) => set({ user }),
+  setLoading: (isLoading) => set({ isLoading }),
+}))
+```
+
+### **URL State Management**
+```typescript
+// ✅ Good: Using nuqs for URL parameters
+import { useQueryState } from 'nuqs'
+
+function SearchPage() {
+  const [query, setQuery] = useQueryState('q', { defaultValue: '' })
+  const [page, setPage] = useQueryState('page', { defaultValue: '1' })
+  
+  return (
+    <div>
+      <input 
+        value={query} 
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+    </div>
+  )
+}
+```
+
+## Performance Optimization
+
+### **Image Optimization**
+```typescript
+// ✅ Good: Next.js Image component
+import Image from 'next/image'
+
+<Image
+  src="/hero-image.webp"
+  alt="Hero image"
+  width={800}
+  height={600}
+  priority
+  placeholder="blur"
+  blurDataURL="data:image/jpeg;base64,..."
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+/>
+```
+
+### **Dynamic Imports**
+```typescript
+// ✅ Good: Dynamic loading for non-critical components
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
+  loading: () => <Skeleton />,
+  ssr: false
+})
+
+// ✅ Good: Suspense boundaries
+<Suspense fallback={<LoadingSpinner />}>
+  <AsyncComponent />
+</Suspense>
+```
+
+## Security Guidelines
+
+### **Input Validation**
+```typescript
+// ✅ Good: Zod schema validation
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(1),
+})
+
+type TUserInput = z.infer<typeof userSchema>
+
+function createUser(input: unknown): TUser {
+  const validatedInput = userSchema.parse(input)
+  // Process validated input
+}
+```
+
+### **CSRF Protection**
+```typescript
+// ✅ Good: CSRF tokens in forms
+function ContactForm() {
+  const [csrfToken, setCsrfToken] = useState('')
+  
+  useEffect(() => {
+    fetch('/api/csrf-token')
+      .then(res => res.json())
+      .then(data => setCsrfToken(data.token))
+  }, [])
+  
+  return (
+    <form action="/api/contact" method="POST">
+      <input type="hidden" name="csrf_token" value={csrfToken} />
+      {/* Form fields */}
+    </form>
+  )
+}
+```
+
+## Testing & Quality
+
+### **Component Testing**
+```typescript
+// ✅ Good: Component test structure
+import { render, screen, fireEvent } from '@testing-library/react'
+import { Button } from './Button'
+
+describe('Button Component', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText('Click me')).toBeInTheDocument()
+  })
+  
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+    
+    fireEvent.click(screen.getByText('Click me'))
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+## Git & Version Control
+
+### **Commit Message Format**
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `revert`
+
+**Examples**:
+```
+feat(auth): implement JWT authentication
+fix(api): resolve race condition in user sessions
+docs(readme): update deployment instructions
+```
+
+### **Branch Naming**
+- `feature/*` - New features
+- `fix/*` - Bug fixes
+- `hotfix/*` - Urgent fixes
+- `release/*` - Release preparations
+- `docs/*` - Documentation updates
+
+## Documentation Standards
+
+### **Component Documentation**
+```typescript
+/**
+ * Button component with multiple variants and sizes
+ * 
+ * @param variant - Visual style variant
+ * @param size - Button size
+ * @param children - Button content
+ * @param onClick - Click handler
+ * 
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="lg" onClick={handleClick}>
+ *   Click me
+ * </Button>
+ * ```
+ */
+export function Button({ variant, size, children, onClick }: TButtonProps) {
+  // Implementation
+}
+```
+
+### **API Documentation**
+```typescript
+/**
+ * @route POST /api/users
+ * @description Create a new user
+ * @param body - User data
+ * @returns Created user object
+ * @throws {ValidationError} When input validation fails
+ */
+export async function POST(request: Request) {
+  // Implementation
+}
+```
+
+## Monitoring & Analytics
+
+### **Error Tracking**
+```typescript
+// ✅ Good: Error boundary with logging
+class ErrorBoundary extends React.Component {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo)
+    // Send to error tracking service
+  }
+}
+```
+
+### **Performance Monitoring**
+```typescript
+// ✅ Good: Web Vitals tracking
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals'
+
+function sendToAnalytics(metric: any) {
+  // Send to analytics service
+}
+
+getCLS(sendToAnalytics)
+getFID(sendToAnalytics)
+getFCP(sendToAnalytics)
+getLCP(sendToAnalytics)
+getTTFB(sendToAnalytics)
+```
+
+## Key Anti-Patterns to Avoid
+
+### **❌ Don't Do This**
+```typescript
+// ❌ Bad: Unnecessary client components
+'use client'
+export function StaticHeader() {
+  return <header>Static content</header>
+}
+
+// ❌ Bad: Missing error handling
+function processData(data: unknown) {
+  return data.someProperty // Could throw
+}
+
+// ❌ Bad: Inline styles instead of Tailwind
+<div style={{ padding: '16px', backgroundColor: 'blue' }}>
+  Content
+</div>
+
+// ❌ Bad: Missing TypeScript types
+function handleClick(event) { // Missing event type
+  // Implementation
+}
+```
+
+### **✅ Do This Instead**
+```typescript
+// ✅ Good: Server component for static content
+export function StaticHeader() {
+  return <header>Static content</header>
+}
+
+// ✅ Good: Proper error handling
+function processData(data: unknown): string {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid data provided')
+  }
+  
+  return (data as any).someProperty || 'default'
+}
+
+// ✅ Good: Tailwind classes
+<div className="p-4 bg-blue-500">
+  Content
+</div>
+
+// ✅ Good: Proper TypeScript types
+function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+  // Implementation
+}
+```
+
+## Development Workflow
+
+1. **Plan**: Think step-by-step, describe in pseudocode
+2. **Confirm**: Verify approach with user
+3. **Implement**: Write complete, functional code
+4. **Test**: Verify functionality and edge cases
+5. **Document**: Add comments and documentation
+6. **Review**: Check against guidelines and best practices
+
+This comprehensive guide ensures consistent, high-quality development practices across the entire project.
+
+## Follow Official Documentation
+
+- Adhere to the official documentation for each technology used
+  - https://payloadcms.com/docs/
+  - https://nextjs.org/docs/
+  - https://react.dev/
+  - https://tailwindcss.com/docs/
+  - https://react.email/docs/introduction
+  - https://zustand.docs.pmnd.rs/
+  - https://vercel.com/docs/
+  - https://vercel.com/docs/functions
+- For Next.js, focus on data fetching methods and routing conventions
+- Stay updated with the latest best practices and updates
+- Add references to the documentation in the code
+- use official github repos and examples as reference:
+  - https://github.com/vercel/next.js
+  - https://github.com/shadcn-ui/ui
+  - https://github.com/radix-ui/react-radix
+  - https://github.com/tailwindlabs/tailwindcss
+  - https://github.com/resend/react-email
+  - https://github.com/pmndrs/zustand
+  - https://github.com/vercel/edge-functions
+- for payloadcms and payloadcms pakcage specific questions adhere to the github repo
+  - https://github.com/payloadcms/payload
+  - https://github.com/payloadcms/payload/tree/main/packages

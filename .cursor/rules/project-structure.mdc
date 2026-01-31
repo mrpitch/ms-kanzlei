@@ -1,0 +1,94 @@
+---
+description: Project directory structure and important files and folders for MS Kanzlei
+alwaysApply: true
+---
+# MS Kanzlei – Project Structure
+
+Reference for where source files and key config live. Paths are from project root.
+
+## Root
+
+| File / folder | Purpose |
+|---------------|--------|
+| `content/` | MDX page content (home, legal areas, impressum) |
+| `src/` | Application source (app, components, lib) |
+| `public/` | Static assets (images, icons) |
+| `e2e/` | Playwright end-to-end tests |
+| `docs/` | Project documentation |
+| `next.config.ts` | Next.js config (static export, image optimization) |
+| `package.json` | Scripts and dependencies |
+| `tsconfig.json` | TypeScript config |
+| `components.json` | shadcn/ui config |
+| `playwright.config.ts` | Playwright e2e config |
+| `export-images.config.js` | next-export-optimize-images config |
+| `eslint.config.mjs` | ESLint config |
+| `postcss.config.mjs` | PostCSS config |
+| `CLAUDE.md` | Project overview for AI (commands, architecture, key files) |
+
+## `content/`
+
+MDX pages; slug comes from filename (without `.mdx`).
+
+- `home.mdx` – homepage (route `/`)
+- `arbeitsrecht.mdx`, `datenschutz.mdx`, `gesellschaftsrecht.mdx`, `insolvenzrecht.mdx`, `mietrecht.mdx` – legal area pages
+- `impressum.mdx` – legal imprint
+
+## `src/`
+
+### `src/app/`
+
+Next.js App Router.
+
+- `layout.tsx` – root layout (Nav, Footer, theme)
+- `page.tsx` – homepage (renders `content/home.mdx`)
+- `[slug]/page.tsx` – dynamic route for other MDX pages; `generateStaticParams()` from content slugs
+- `favicon.ico` – favicon
+
+### `src/components/`
+
+React components.
+
+- `header.tsx`, `footer.tsx`, `hero.tsx` – layout and landing
+- `mdx-components.tsx` – custom MDX components for next-mdx-remote
+- `dark-veil.tsx`, `testimonial.tsx`, `theme-provider.tsx` – UI/theme
+- `ui/` – shadcn-style primitives: `button`, `card`, `container`, `dropdown-menu`, `icons`, `logo`, `mode-toggle`, `separator`, `typography`
+
+### `src/lib/`
+
+Shared logic, config, styles.
+
+- `mdx.ts` – read/parse MDX from `content/`, frontmatter, slugs
+- `config.json` – app/site config
+- `types.ts` – shared TypeScript types
+- `utils/cn.ts` – class-name merge utility
+- `hooks/use-mobile.ts` – mobile breakpoint hook
+- `styles/` – Tailwind and themes:
+  - `globals.css` – global styles; theme import (e.g. gingerhero)
+  - `theme.css` – theme wiring
+  - `variables-*.css` – per-theme CSS variables (amethysthaze, bubblegum, caffeine, candyland, gingerhero, nature, sageandsand, vintagepaper)
+  - `fonts/` – font theme modules (`index.ts`, `index.node.ts`, and one file per theme)
+
+## `public/`
+
+Static assets; reference with paths like `/images/...`.
+
+- `images/icons/` – SVG icons (e.g. icon-blog-teaser.svg, icon-code.svg)
+- `images/rechtsanwalt-mark-schilling.jpg` – lawyer photo
+
+## `e2e/`
+
+- `home.spec.ts` – Playwright e2e for homepage
+
+## `.cursor/`
+
+- `rules/` – Cursor rule files (`.mdc`)
+- `commands/` – Cursor command definitions
+
+## Path aliases
+
+- `@/*` → `./src/*`
+- `@/components/*` → `./src/components/*`
+- `@/lib/*` → `./src/lib/*`
+- `@/img/*` → `./public/img/*` (if used)
+
+When adding features: put pages in `content/`, routes in `src/app/`, shared UI in `src/components/`, and content/config/theme logic in `src/lib/`.

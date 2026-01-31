@@ -53,5 +53,8 @@
 		"overrides": {
 			"next-export-optimize-images>next": "16.1.6"
 		}
+	},
+	"engines": {
+		"node": ">=22.10.0"
 	}
 }
