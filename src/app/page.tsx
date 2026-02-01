@@ -25,7 +25,7 @@ export default function Home() {
 				<CustomMDX source={homeContent.content} />
 			)}
 			<Container as="section" className="my-12">
-				<h2 className="text-2xl font-bold mb-6">Rechtsgebiete</h2>
+				<h2 className="text-3xl font-bold font-serif tracking-tight mb-8">Rechtsgebiete</h2>
 				<div className="grid gap-6 md:grid-cols-2">
 					{posts
 						.filter((post) => !['home', 'impressum', 'datenschutz'].includes(post.slug))
@@ -35,23 +35,23 @@ export default function Home() {
 
 							return (<Card
 								key={post.slug}
-								className="group hover:border-secondary transition-colors scroll-mt-24"
+								className="group hover:border-primary hover:shadow-lg transition-all duration-300 hover:-translate-y-1 scroll-mt-24"
 							>
 								<Link href={`/${post.slug}`}>
 									<CardHeader>
 										<div className="flex items-start gap-4">
-											<div className="p-3 bg-secondary rounded-lg">
+											<div className="p-3 bg-secondary rounded-lg group-hover:bg-primary transition-colors duration-300">
 												{IconComponent ? (
-													<IconComponent className="h-6 w-6 text-foreground" />
+													<IconComponent className="h-6 w-6 text-foreground group-hover:text-primary-foreground transition-colors duration-300" />
 												) : null}
 											</div>
 											<div className="flex-1">
-												<CardTitle className="text-xl mb-2">{post.metadata.title}</CardTitle>
+												<CardTitle className="text-xl font-serif mb-2">{post.metadata.title}</CardTitle>
 
 											</div>
 										</div>
 									</CardHeader>
-									<CardContent className="text-base leading-relaxed">
+									<CardContent className="text-base leading-relaxed text-muted-foreground">
 										{post.metadata.description}
 									</CardContent>
 								</Link>

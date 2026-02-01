@@ -18,7 +18,7 @@ export function Footer() {
 			<Container as="footer" className="py-12 md:py-16 lg:py-20">
 				<div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
 					{/* Brand & Description */}
-					<div className="lg:col-span-2">
+					<div>
 						<Link href="/" className="flex items-center gap-2 mb-6">
 							<Logo />
 							<span className="font-semibold text-lg tracking-tight">{config.title}</span>
@@ -28,24 +28,8 @@ export function Footer() {
 						</p>
 					</div>
 
-					{/* Navigation */}
-					<div>
-						<h3 className="font-semibold mb-6">Navigation</h3>
-						<nav className="flex flex-col gap-3">
-							{navItems.map((item) => (
-								<Link
-									key={item.href}
-									href={item.href}
-									className="text-foreground/80 hover:text-foreground transition-colors"
-								>
-									{item.label}
-								</Link>
-							))}
-						</nav>
-					</div>
-
 					{/* Contact */}
-					<div>
+					<div className="lg:justify-self-end">
 						<h3 className="font-semibold mb-6">Kontakt</h3>
 						<div className="flex flex-col gap-4">
 							<a
@@ -70,6 +54,23 @@ export function Footer() {
 								</span>
 							</div>
 						</div>
+					</div>
+
+
+					{/* Navigation */}
+					<div className="lg:justify-self-center">
+						<h3 className="font-semibold mb-6">Navigation</h3>
+						<nav className="flex flex-col gap-3">
+							{navItems.map((item) => (
+								<Link
+									key={item.href}
+									href={item.href}
+									className="text-foreground/80 hover:text-foreground transition-colors"
+								>
+									{item.label}
+								</Link>
+							))}
+						</nav>
 					</div>
 				</div>
 			</Container>

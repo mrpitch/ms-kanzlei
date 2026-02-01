@@ -12,6 +12,14 @@ import { sans, serif, mono } from '@/lib/styles/fonts'
 export const metadata: Metadata = {
 	title: "MS Kanzlei",
 	description: "Ihre Rechtsanwaltskanzlei für kompetente rechtliche Beratung",
+	robots: {
+		index: false,
+		follow: false,
+		googleBot: {
+			index: false,
+			follow: false,
+		}
+	},
 	icons: {
 		icon: '/favicon.ico',
 		shortcut: '/favicon-16x16.png',
