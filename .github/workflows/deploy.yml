@@ -3,10 +3,18 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_mode:
+        description: What to deploy
+        type: choice
+        options: [next, cdk, full]
+        default: full
 
 permissions:
   id-token: write
   contents: read
+  issues: write
 
 concurrency:
   group: deploy-production
@@ -16,7 +24,86 @@ env:
   AWS_REGION: eu-central-1
 
 jobs:
-  deploy:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      run_cdk: ${{ steps.changes.outputs.run_cdk }}
+      run_next: ${{ steps.changes.outputs.run_next }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            mode="${{ inputs.deploy_mode }}"
+            case "$mode" in
+              cdk)
+                echo "run_cdk=true" >> "$GITHUB_OUTPUT"
+                echo "run_next=false" >> "$GITHUB_OUTPUT"
+                ;;
+              next)
+                echo "run_cdk=false" >> "$GITHUB_OUTPUT"
+                echo "run_next=true" >> "$GITHUB_OUTPUT"
+                ;;
+              full)
+                echo "run_cdk=true" >> "$GITHUB_OUTPUT"
+                echo "run_next=true" >> "$GITHUB_OUTPUT"
+                ;;
+            esac
+          else
+            # Get changed files between commits
+            CHANGED=$(git diff --name-only ${{ github.event.before }}...${{ github.sha }} || echo "")
+
+            # Check for CDK changes
+            if echo "$CHANGED" | grep -qE '^cdk/'; then
+              echo "run_cdk=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run_cdk=false" >> "$GITHUB_OUTPUT"
+            fi
+
+            # Check for site changes
+            if echo "$CHANGED" | grep -qE '^(content/|src/|public/|next\.config\.ts|export-images\.config\.js|package\.json|pnpm-lock\.yaml|tailwind\.config\.|postcss\.config\.|tsconfig\.json)'; then
+              echo "run_next=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run_next=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - run: |
+          echo "run_cdk=${{ steps.changes.outputs.run_cdk }}"
+          echo "run_next=${{ steps.changes.outputs.run_next }}"
+
+  deploy-cdk:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.run_cdk == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: cdk/pnpm-lock.yaml
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: cdk
+      - run: pnpm cdk deploy --all --require-approval never
+        working-directory: cdk
+
+  build-next:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.run_next == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,47 +116,117 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - run: pnpm --version
-
-      # Build site
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
-      # AWS auth via OIDC
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: out/
+          retention-days: 1
+
+  resolve-infra-outputs:
+    needs: [detect-changes, deploy-cdk, build-next]
+    if: |
+      always() &&
+      (needs.detect-changes.outputs.run_cdk == 'true' || needs.detect-changes.outputs.run_next == 'true') &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    outputs:
+      bucket: ${{ steps.outputs.outputs.bucket }}
+      distribution_id: ${{ steps.outputs.outputs.distribution_id }}
+    steps:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # CDK deploy (both stacks)
-      - run: pnpm install --frozen-lockfile
-        working-directory: cdk
-      - run: pnpm cdk deploy --all --require-approval never --outputs-file cdk-outputs.json
-        working-directory: cdk
-
-      # Extract outputs
       - id: outputs
-        working-directory: cdk
         run: |
-          echo "bucket=$(jq -r '.MsKanzleiStack.BucketName' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
-          echo "dist-id=$(jq -r '.MsKanzleiStack.DistributionId' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          STACK_OUTPUT=$(aws cloudformation describe-stacks --stack-name MsKanzleiStack --query 'Stacks[0].Outputs' --output json)
+          echo "bucket=$(echo "$STACK_OUTPUT" | jq -r '.[] | select(.OutputKey=="BucketName") | .OutputValue')" >> "$GITHUB_OUTPUT"
+          echo "distribution_id=$(echo "$STACK_OUTPUT" | jq -r '.[] | select(.OutputKey=="DistributionId") | .OutputValue')" >> "$GITHUB_OUTPUT"
+
+      - run: |
+          echo "bucket=${{ steps.outputs.outputs.bucket }}"
+          echo "distribution_id=${{ steps.outputs.outputs.distribution_id }}"
+
+  publish-site:
+    needs: [detect-changes, build-next, resolve-infra-outputs]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.run_next == 'true' &&
+      needs.build-next.result == 'success' &&
+      needs.resolve-infra-outputs.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      BUCKET: ${{ needs.resolve-infra-outputs.outputs.bucket }}
+      DIST_ID: ${{ needs.resolve-infra-outputs.outputs.distribution_id }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: out/
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       # S3 sync — immutable assets with long cache
       - run: |
-          aws s3 sync out/_next/static s3://${{ steps.outputs.outputs.bucket }}/_next/static \
+          aws s3 sync out/_next/static s3://$BUCKET/_next/static \
             --cache-control "public,max-age=31536000,immutable" --delete
       - run: |
-          aws s3 sync out/_optimized s3://${{ steps.outputs.outputs.bucket }}/_optimized \
+          aws s3 sync out/_optimized s3://$BUCKET/_optimized \
             --cache-control "public,max-age=31536000,immutable" --delete
 
       # S3 sync — HTML and other files with no-cache
       - run: |
-          aws s3 sync out s3://${{ steps.outputs.outputs.bucket }} \
+          aws s3 sync out s3://$BUCKET \
             --exclude "_next/*" --exclude "_optimized/*" \
             --cache-control "public,max-age=0,must-revalidate" --delete
 
-      # Invalidate CloudFront
-      - run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ steps.outputs.outputs.dist-id }} \
-            --paths "/*"
+      # CloudFront invalidation
+      - name: Invalidate CloudFront
+        run: |
+          # Collect HTML files and convert to URL paths
+          PATHS="/ /index.html /404.html /sitemap.xml /robots.txt"
+          HTML_PATHS=$(find out -name "*.html" -type f | sed 's|^out||' | grep -v "^/index.html$" | grep -v "^/404.html$" || true)
+          ALL_PATHS="$PATHS $HTML_PATHS"
+          PATH_COUNT=$(echo $ALL_PATHS | wc -w | tr -d ' ')
+
+          if [ "$PATH_COUNT" -gt 15 ]; then
+            echo "Too many paths ($PATH_COUNT), using wildcard invalidation"
+            aws cloudfront create-invalidation \
+              --distribution-id $DIST_ID \
+              --paths "/*"
+          else
+            echo "Invalidating $PATH_COUNT paths"
+            aws cloudfront create-invalidation \
+              --distribution-id $DIST_ID \
+              --paths $ALL_PATHS
+          fi
+
+  notify-failure:
+    needs: [detect-changes, deploy-cdk, build-next, resolve-infra-outputs, publish-site]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "Deploy failed: Run #${{ github.run_number }}" \
+            --body "## Deploy Failure
+
+          **Workflow run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref_name }}
+          **Triggered by:** ${{ github.event_name }}
+
+          Please investigate the failed job(s) in the workflow run above."
