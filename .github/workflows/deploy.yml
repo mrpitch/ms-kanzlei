@@ -1,0 +1,70 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: eu-central-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Build site
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # AWS auth via OIDC
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # CDK deploy (both stacks)
+      - run: pnpm install --frozen-lockfile
+        working-directory: cdk
+      - run: pnpm cdk deploy --all --require-approval never --outputs-file cdk-outputs.json
+        working-directory: cdk
+
+      # Extract outputs
+      - id: outputs
+        working-directory: cdk
+        run: |
+          echo "bucket=$(jq -r '.MsKanzleiStack.BucketName' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "dist-id=$(jq -r '.MsKanzleiStack.DistributionId' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+
+      # S3 sync — immutable assets with long cache
+      - run: |
+          aws s3 sync out/_next/static s3://${{ steps.outputs.outputs.bucket }}/_next/static \
+            --cache-control "public,max-age=31536000,immutable" --delete
+      - run: |
+          aws s3 sync out/_optimized s3://${{ steps.outputs.outputs.bucket }}/_optimized \
+            --cache-control "public,max-age=31536000,immutable" --delete
+
+      # S3 sync — HTML and other files with no-cache
+      - run: |
+          aws s3 sync out s3://${{ steps.outputs.outputs.bucket }} \
+            --exclude "_next/*" --exclude "_optimized/*" \
+            --cache-control "public,max-age=0,must-revalidate" --delete
+
+      # Invalidate CloudFront
+      - run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.outputs.outputs.dist-id }} \
+            --paths "/*"
