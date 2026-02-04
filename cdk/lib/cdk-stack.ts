@@ -147,6 +147,16 @@ function handler(event) {
       }),
     );
 
+    // Allow workflow to read stack outputs for deployment
+    deployRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['cloudformation:DescribeStacks'],
+        resources: [
+          `arn:aws:cloudformation:${props.regionMain}:${this.account}:stack/MsKanzleiStack/*`,
+        ],
+      }),
+    );
+
     // Allow CDK CLI to assume bootstrap roles created by `cdk bootstrap`
     deployRole.addToPolicy(
       new iam.PolicyStatement({
