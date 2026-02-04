@@ -11,6 +11,7 @@ This document outlines the complete development preferences, coding standards, a
 ## Core Development Principles
 
 ### **Primary Guidelines**
+
 - Follow user requirements carefully & to the letter
 - Think step-by-step: describe plan in pseudocode with great detail
 - Confirm approach, then write code
@@ -26,24 +27,27 @@ This document outlines the complete development preferences, coding standards, a
 ## Technology Stack & Versions
 
 ### **Core Technologies**
-- **Next.js 15** - App Router, Server Components
+
+- **Next.js 16** - App Router, Server Components
 - **React 19.0.0** - Latest with Actions, use(), new features
 - **TypeScript** - Strict typing, interfaces over types
 - **Tailwind CSS v4** - Latest major version (beta)
 - **Payload CMS 3.50.0** - Latest stable version
 
 ### **UI & Styling**
+
 - **Shadcn UI** - Component library
 - **Radix UI** - Headless components
 - **Tailwind CSS** - Utility-first styling
 - **React Email** - Email templates
 
 ### **State & Data**
+
 - **Zustand** - State management
-- **TanStack React Query** - Data fetching and caching
 - **Zod** - Schema validation and type inference
 
 ### **Infrastructure**
+
 - **pnpm** - Package manager
 - **Turbo** - Monorepo management
 - **Vercel** - Deployment platform
@@ -53,6 +57,7 @@ This document outlines the complete development preferences, coding standards, a
 ## Code Style & Structure
 
 ### **TypeScript Guidelines**
+
 ```typescript
 // ✅ Good: Use interfaces for object shapes
 interface TUserProps {
@@ -72,6 +77,7 @@ enum UserRole {
 ```
 
 ### **Component Structure**
+
 ```typescript
 // ✅ Good: Functional components with TypeScript
 interface TButtonProps {
@@ -106,6 +112,7 @@ const BUTTON_VARIANTS = ['primary', 'secondary'] as const
 ```
 
 ### **Naming Conventions**
+
 - **Directories**: `kebab-case` (e.g., `components/auth-wizard`)
 - **Files**: `kebab-case.tsx` for components
 - **Types**: `T{DescriptiveName}` (e.g., `TUserProps`, `TApiResponse`)
@@ -116,6 +123,7 @@ const BUTTON_VARIANTS = ['primary', 'secondary'] as const
 ## React & Next.js Best Practices
 
 ### **Server Components First**
+
 ```typescript
 // ✅ Good: Server Component (default)
 export default function UserProfile({ userId }: { userId: string }) {
@@ -143,6 +151,7 @@ export function InteractiveButton() {
 ```
 
 ### **Data Fetching Patterns**
+
 ```typescript
 // ✅ Good: Server-side data fetching
 async function getUsers(): Promise<TUser[]> {
@@ -161,6 +170,7 @@ function useUsers() {
 ```
 
 ### **Error Handling**
+
 ```typescript
 // ✅ Good: Early returns and guard clauses
 function processUser(user: TUser | null): string {
@@ -188,6 +198,7 @@ class TValidationError extends Error {
 ## UI & Styling Guidelines
 
 ### **Tailwind CSS Patterns**
+
 ```typescript
 // ✅ Good: Mobile-first responsive design
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -222,6 +233,7 @@ const buttonVariants = cva(
 ```
 
 ### **Accessibility Standards**
+
 ```typescript
 // ✅ Good: WCAG 2.1 Level AA compliance
 <button
@@ -247,6 +259,7 @@ const buttonVariants = cva(
 ## State Management
 
 ### **Zustand Patterns**
+
 ```typescript
 // ✅ Good: Type-safe store
 interface TUserStore {
@@ -265,6 +278,7 @@ export const useUserStore = create<TUserStore>((set) => ({
 ```
 
 ### **URL State Management**
+
 ```typescript
 // ✅ Good: Using nuqs for URL parameters
 import { useQueryState } from 'nuqs'
@@ -288,6 +302,7 @@ function SearchPage() {
 ## Performance Optimization
 
 ### **Image Optimization**
+
 ```typescript
 // ✅ Good: Next.js Image component
 import Image from 'next/image'
@@ -305,6 +320,7 @@ import Image from 'next/image'
 ```
 
 ### **Dynamic Imports**
+
 ```typescript
 // ✅ Good: Dynamic loading for non-critical components
 const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
@@ -321,6 +337,7 @@ const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
 ## Security Guidelines
 
 ### **Input Validation**
+
 ```typescript
 // ✅ Good: Zod schema validation
 const userSchema = z.object({
@@ -338,6 +355,7 @@ function createUser(input: unknown): TUser {
 ```
 
 ### **CSRF Protection**
+
 ```typescript
 // ✅ Good: CSRF tokens in forms
 function ContactForm() {
@@ -361,6 +379,7 @@ function ContactForm() {
 ## Testing & Quality
 
 ### **Component Testing**
+
 ```typescript
 // ✅ Good: Component test structure
 import { render, screen, fireEvent } from '@testing-library/react'
@@ -385,6 +404,7 @@ describe('Button Component', () => {
 ## Git & Version Control
 
 ### **Commit Message Format**
+
 ```
 <type>(<scope>): <subject>
 
@@ -396,6 +416,7 @@ describe('Button Component', () => {
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `revert`
 
 **Examples**:
+
 ```
 feat(auth): implement JWT authentication
 fix(api): resolve race condition in user sessions
@@ -403,6 +424,7 @@ docs(readme): update deployment instructions
 ```
 
 ### **Branch Naming**
+
 - `feature/*` - New features
 - `fix/*` - Bug fixes
 - `hotfix/*` - Urgent fixes
@@ -412,6 +434,7 @@ docs(readme): update deployment instructions
 ## Documentation Standards
 
 ### **Component Documentation**
+
 ```typescript
 /**
  * Button component with multiple variants and sizes
@@ -434,6 +457,7 @@ export function Button({ variant, size, children, onClick }: TButtonProps) {
 ```
 
 ### **API Documentation**
+
 ```typescript
 /**
  * @route POST /api/users
@@ -450,6 +474,7 @@ export async function POST(request: Request) {
 ## Monitoring & Analytics
 
 ### **Error Tracking**
+
 ```typescript
 // ✅ Good: Error boundary with logging
 class ErrorBoundary extends React.Component {
@@ -461,6 +486,7 @@ class ErrorBoundary extends React.Component {
 ```
 
 ### **Performance Monitoring**
+
 ```typescript
 // ✅ Good: Web Vitals tracking
 import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals'
@@ -479,6 +505,7 @@ getTTFB(sendToAnalytics)
 ## Key Anti-Patterns to Avoid
 
 ### **❌ Don't Do This**
+
 ```typescript
 // ❌ Bad: Unnecessary client components
 'use client'
@@ -503,6 +530,7 @@ function handleClick(event) { // Missing event type
 ```
 
 ### **✅ Do This Instead**
+
 ```typescript
 // ✅ Good: Server component for static content
 export function StaticHeader() {
@@ -543,25 +571,25 @@ This comprehensive guide ensures consistent, high-quality development practices 
 ## Follow Official Documentation
 
 - Adhere to the official documentation for each technology used
-  - https://payloadcms.com/docs/
-  - https://nextjs.org/docs/
-  - https://react.dev/
-  - https://tailwindcss.com/docs/
-  - https://react.email/docs/introduction
-  - https://zustand.docs.pmnd.rs/
-  - https://vercel.com/docs/
-  - https://vercel.com/docs/functions
+  - <https://payloadcms.com/docs/>
+  - <https://nextjs.org/docs/>
+  - <https://react.dev/>
+  - <https://tailwindcss.com/docs/>
+  - <https://react.email/docs/introduction>
+  - <https://zustand.docs.pmnd.rs/>
+  - <https://vercel.com/docs/>
+  - <https://vercel.com/docs/functions>
 - For Next.js, focus on data fetching methods and routing conventions
 - Stay updated with the latest best practices and updates
 - Add references to the documentation in the code
 - use official github repos and examples as reference:
-  - https://github.com/vercel/next.js
-  - https://github.com/shadcn-ui/ui
-  - https://github.com/radix-ui/react-radix
-  - https://github.com/tailwindlabs/tailwindcss
-  - https://github.com/resend/react-email
-  - https://github.com/pmndrs/zustand
-  - https://github.com/vercel/edge-functions
+  - <https://github.com/vercel/next.js>
+  - <https://github.com/shadcn-ui/ui>
+  - <https://github.com/radix-ui/react-radix>
+  - <https://github.com/tailwindlabs/tailwindcss>
+  - <https://github.com/resend/react-email>
+  - <https://github.com/pmndrs/zustand>
+  - <https://github.com/vercel/edge-functions>
 - for payloadcms and payloadcms pakcage specific questions adhere to the github repo
-  - https://github.com/payloadcms/payload
-  - https://github.com/payloadcms/payload/tree/main/packages
+  - <https://github.com/payloadcms/payload>
+  - <https://github.com/payloadcms/payload/tree/main/packages>
