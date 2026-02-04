@@ -133,6 +133,25 @@ function handler(event) {
       }),
     );
 
+    // Allow CDK CLI to read bootstrap version in both deployment regions
+    deployRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['ssm:GetParameter'],
+        resources: [
+          `arn:aws:ssm:us-east-1:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+          `arn:aws:ssm:eu-central-1:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+        ],
+      }),
+    );
+
+    // Allow CDK CLI to assume bootstrap roles created by `cdk bootstrap`
+    deployRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['sts:AssumeRole'],
+        resources: [`arn:aws:iam::${this.account}:role/cdk-hnb659fds-*-role-${this.account}-*`],
+      }),
+    );
+
     // Outputs
     new cdk.CfnOutput(this, 'BucketName', { value: bucket.bucketName });
     new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
