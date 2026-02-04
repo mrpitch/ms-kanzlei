@@ -12,6 +12,10 @@ export interface MsKanzleiStackProps extends cdk.StackProps {
   certificate: acm.ICertificate;
   domainName: string;
   hostedZoneId: string;
+  githubDeployRoleName: string;
+  githubRepoRef: string;
+  regionCert: string;
+  regionMain: string;
 }
 
 export class MsKanzleiStack extends cdk.Stack {
@@ -107,14 +111,13 @@ function handler(event) {
 
     // IAM role for GitHub Actions deployment
     const deployRole = new iam.Role(this, 'GitHubDeployRole', {
-      roleName: 'ms-kanzlei-github-deploy',
+      roleName: props.githubDeployRoleName,
       assumedBy: new iam.OpenIdConnectPrincipal(oidcProvider, {
         StringEquals: {
           'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
         },
         StringLike: {
-          'token.actions.githubusercontent.com:sub':
-            'repo:mrpitch/ms-kanzlei:ref:refs/heads/main',
+          'token.actions.githubusercontent.com:sub': props.githubRepoRef,
         },
       }),
     });
@@ -138,8 +141,8 @@ function handler(event) {
       new iam.PolicyStatement({
         actions: ['ssm:GetParameter'],
         resources: [
-          `arn:aws:ssm:us-east-1:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
-          `arn:aws:ssm:eu-central-1:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+          `arn:aws:ssm:${props.regionCert}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+          `arn:aws:ssm:${props.regionMain}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
         ],
       }),
     );
