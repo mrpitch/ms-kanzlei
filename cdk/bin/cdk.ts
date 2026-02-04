@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib/core';
-import { MsKanzleiCertStack } from '../lib/cert-stack.js';
-import { MsKanzleiStack } from '../lib/cdk-stack.js';
+import * as cdk from 'aws-cdk-lib';
+import { MsKanzleiCertStack } from '../lib/cert-stack';
+import { MsKanzleiStack } from '../lib/cdk-stack';
 
 const app = new cdk.App();
 

@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // CDK is deployed separately and includes generated artifacts.
+    "cdk/**",
   ]),
 ]);
 
