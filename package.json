@@ -54,7 +54,7 @@
 			"next-export-optimize-images>next": "16.1.6"
 		}
 	},
-	"packageManager": "pnpm@10.9.2",
+	"packageManager": "pnpm@10",
 	"engines": {
 		"node": ">=22",
 		"pnpm": ">=10"
