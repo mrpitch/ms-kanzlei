@@ -1,4 +1,4 @@
-import * as cdk from 'aws-cdk-lib/core';
+import * as cdk from 'aws-cdk-lib';
 import { Template, Match } from 'aws-cdk-lib/assertions';
 import { MsKanzleiStack } from '../lib/cdk-stack.js';
 import { MsKanzleiCertStack } from '../lib/cert-stack.js';
