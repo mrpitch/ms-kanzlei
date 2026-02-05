@@ -1,8 +1,9 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CustomMDX } from '@/components/mdx-components';
 import { Container } from '@/components/ui/container';
 import { getPosts, getPostBySlug } from '@/lib/mdx';
-import { Briefcase, AlertCircle, Building2, Home, LucideIcon } from 'lucide-react';
+import { Briefcase, AlertCircle, Building2, Home, LucideIcon, ChevronLeft } from 'lucide-react';
 
 // Map frontmatter icon names to Lucide components
 const iconMap: Record<string, LucideIcon> = {
@@ -56,6 +57,12 @@ export default async function Page({
 
 	return (
 		<Container as="article" className="mt-12">
+			<div className="mb-6">
+				<Link href="/" className="flex items-center gap-2">
+					<ChevronLeft className="h-4 w-4" />
+					<span>Übersicht</span>
+				</Link>
+			</div>
 			{/* Hero intro section */}
 			<div className="mb-12 pb-8 border-b border-border">
 				<div className="flex items-start gap-4 md:gap-6">

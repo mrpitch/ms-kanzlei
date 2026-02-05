@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ContactPopover } from "@/components/contact-popover"
 import { Container } from "@/components/ui/container"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import { Logo } from "@/components/ui/logo"
@@ -31,7 +32,7 @@ export function Header() {
 							<Link
 								key={item.href}
 								href={item.href}
-								className="text-primary text-lghover:text-secondary transition-colors"
+								className="text-primary text-lg hover:text-secondary transition-colors"
 							>
 								{item.label}
 							</Link>
@@ -39,7 +40,8 @@ export function Header() {
 					</nav>
 
 
-					<div className="flex-1 flex justify-end">
+					<div className="flex-1 flex gap-2 justify-end">
+						<ContactPopover />
 						<ModeToggle />
 					</div>
 

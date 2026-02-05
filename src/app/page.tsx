@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getPosts } from '@/lib/mdx';
 import { CustomMDX } from '@/components/mdx-components';
 import { getPostBySlug } from '@/lib/mdx';
+
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import Testimonial from '@/components/testimonial';
