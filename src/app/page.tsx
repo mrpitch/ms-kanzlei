@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { getPosts } from '@/lib/mdx'
 import { CustomMDX } from '@/components/mdx-components'
 import { getPostBySlug } from '@/lib/mdx'
@@ -14,6 +15,16 @@ const iconMap: Record<string, LucideIcon> = {
 	AlertCircle,
 	Building2,
 	Home: HomeIcon,
+}
+
+export async function generateMetadata() {
+	const page = getPostBySlug('home')
+	if (!page) notFound()
+
+	return {
+		title: page.metadata.title,
+		description: page.metadata.description,
+	}
 }
 
 export default function Home() {

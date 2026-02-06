@@ -10,7 +10,6 @@ import { sans, serif, mono } from '@/lib/styles/fonts'
 
 export const metadata: Metadata = {
 	title: 'MS Kanzlei',
-	description: 'Ihre Rechtsanwaltskanzlei für kompetente rechtliche Beratung',
 	formatDetection: { telephone: false, date: false, email: false, address: false },
 	robots: {
 		index: false,
