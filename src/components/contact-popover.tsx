@@ -32,7 +32,7 @@ export function ContactPopover() {
 			</PopoverTrigger>
 			<PopoverContent align="end">
 				<PopoverHeader>
-					<PopoverTitle className="text-2xl font-bold text-secondary">Kontakt</PopoverTitle>
+					<PopoverTitle className="text-2xl font-bold text-foreground">Kontakt</PopoverTitle>
 					<PopoverDescription className="grid grid-cols-1 gap-4 pt-6">
 						<a
 							href={`tel:${contact.phone}`}
