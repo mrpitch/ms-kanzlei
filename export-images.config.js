@@ -4,19 +4,14 @@
 const config = {
 	imageDir: '_optimized',
 	cacheDir: 'out/.cache',
-	quality: 75,
-	filenameGenerator: ({ path, name, extension, width }) =>
-		`${path.replace(/^\//, '').replace(/\//g, '-')}-${name}.${width}.${extension}`,
-	// sharpOptions: {
-	// 	webp: {
-	// 		quality: 80,
-	// 	},
-	// },
+	quality: 90,
 	convertFormat: [
+		['png', 'avif'],
+		['jpg', 'avif'],
 		['png', 'webp'],
 		['jpg', 'webp'],
 	],
-	generateFormats: ['webp'],
+	generateFormats: ['avif', 'webp'],
 }
 
 module.exports = config
