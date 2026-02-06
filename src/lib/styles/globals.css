@@ -56,9 +56,11 @@
 @layer base {
 	body {
 		@apply bg-background text-foreground;
+		@apply border-border outline-ring/50;
 	}
 	* {
 		@apply border-border;
+		@apply border-border outline-ring/50;
 	}
 }
 
@@ -72,14 +74,5 @@ html {
 @media (min-width: 768px) {
 	html {
 		scroll-padding-top: 7rem; /* 128px for desktop - extra breathing room */
-	}
-}
-/*---break---*/
-@layer base {
-	* {
-		@apply border-border outline-ring/50;
-	}
-	body {
-		@apply bg-background text-foreground;
 	}
 }

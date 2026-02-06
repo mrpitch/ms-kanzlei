@@ -65,40 +65,73 @@ function handler(event) {
 			'upgrade-insecure-requests',
 		].join('; ')
 
+		const securityHeadersBehavior: cloudfront.ResponseHeadersPolicyProps['securityHeadersBehavior'] =
+			{
+				contentSecurityPolicy: {
+					contentSecurityPolicy,
+					override: true,
+				},
+				strictTransportSecurity: {
+					accessControlMaxAge: cdk.Duration.seconds(63072000),
+					includeSubdomains: true,
+					preload: true,
+					override: true,
+				},
+				contentTypeOptions: { override: true },
+				referrerPolicy: {
+					referrerPolicy: cloudfront.HeadersReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN,
+					override: true,
+				},
+				frameOptions: { frameOption: cloudfront.HeadersFrameOption.DENY, override: true },
+			}
+
+		const permissionsPolicyHeader: cloudfront.ResponseCustomHeader = {
+			header: 'Permissions-Policy',
+			value:
+				'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
+			override: true,
+		}
+
 		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
 			this,
 			'SecurityHeadersPolicy',
 			{
-				securityHeadersBehavior: {
-					contentSecurityPolicy: {
-						contentSecurityPolicy,
-						override: true,
-					},
-					strictTransportSecurity: {
-						accessControlMaxAge: cdk.Duration.seconds(63072000),
-						includeSubdomains: true,
-						preload: true,
-						override: true,
-					},
-					contentTypeOptions: { override: true },
-					referrerPolicy: {
-						referrerPolicy: cloudfront.HeadersReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN,
-						override: true,
-					},
-					frameOptions: { frameOption: cloudfront.HeadersFrameOption.DENY, override: true },
+				securityHeadersBehavior,
+				customHeadersBehavior: {
+					customHeaders: [permissionsPolicyHeader],
 				},
+			},
+		)
+
+		const assetsResponseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+			this,
+			'AssetsHeadersPolicy',
+			{
+				securityHeadersBehavior,
 				customHeadersBehavior: {
 					customHeaders: [
+						permissionsPolicyHeader,
 						{
-							header: 'Permissions-Policy',
-							value:
-								'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
+							header: 'Cache-Control',
+							value: 'public, max-age=31536000, immutable',
 							override: true,
 						},
 					],
 				},
 			},
 		)
+
+		const assetsCachePolicy = new cloudfront.CachePolicy(this, 'AssetsCachePolicy', {
+			comment: 'Long-lived caching for versioned static assets',
+			minTtl: cdk.Duration.days(1),
+			defaultTtl: cdk.Duration.days(365),
+			maxTtl: cdk.Duration.days(365),
+			cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+			headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+			queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+			enableAcceptEncodingBrotli: true,
+			enableAcceptEncodingGzip: true,
+		})
 
 		// CloudFront distribution
 		const distribution = new cloudfront.Distribution(this, 'Distribution', {
@@ -113,6 +146,50 @@ function handler(event) {
 						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
 					},
 				],
+			},
+			additionalBehaviors: {
+				'_next/static/*': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'_optimized/*': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'images/*': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'favicon.ico': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'robots.txt': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'sitemap.xml': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
+				'sitemap-*.xml': {
+					origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+					viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+					cachePolicy: assetsCachePolicy,
+					responseHeadersPolicy: assetsResponseHeadersPolicy,
+				},
 			},
 			domainNames: [props.domainName],
 			certificate: props.certificate,
