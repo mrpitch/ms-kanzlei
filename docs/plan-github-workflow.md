@@ -87,29 +87,30 @@ on:
 
 ## Cache Headers Strategy
 
-| Path | Cache-Control |
-|------|---------------|
+| Path             | Cache-Control                       |
+| ---------------- | ----------------------------------- |
 | `_next/static/*` | `public,max-age=31536000,immutable` |
-| `_optimized/*` | `public,max-age=31536000,immutable` |
-| `*.html`, `/` | `public,max-age=0,must-revalidate` |
+| `_optimized/*`   | `public,max-age=31536000,immutable` |
+| `*.html`, `/`    | `public,max-age=0,must-revalidate`  |
 
 ## CloudFront Invalidation
 
 Default paths: `/ /index.html /404.html /sitemap.xml /robots.txt`
+
 - All `*.html` files converted to URL paths
-Fallback to `/*` if >15 paths
+  Fallback to `/*` if >15 paths
 
 ## Validation Matrix
 
-| Trigger | run_cdk | run_next | Jobs |
-|---------|---------|----------|------|
-| Push: only `cdk/**` | true | false | detect → deploy-cdk → resolve |
-| Push: only site files | false | true | detect → build-next → resolve → publish |
-| Push: both | true | true | all jobs |
-| Push: unrelated files | false | false | detect only |
-| Manual: next | false | true | detect → build-next → resolve → publish |
-| Manual: cdk | true | false | detect → deploy-cdk → resolve |
-| Manual: full | true | true | all jobs |
+| Trigger               | run_cdk | run_next | Jobs                                    |
+| --------------------- | ------- | -------- | --------------------------------------- |
+| Push: only `cdk/**`   | true    | false    | detect → deploy-cdk → resolve           |
+| Push: only site files | false   | true     | detect → build-next → resolve → publish |
+| Push: both            | true    | true     | all jobs                                |
+| Push: unrelated files | false   | false    | detect only                             |
+| Manual: next          | false   | true     | detect → build-next → resolve → publish |
+| Manual: cdk           | true    | false    | detect → deploy-cdk → resolve           |
+| Manual: full          | true    | true     | all jobs                                |
 
 ## Files to Modify
 

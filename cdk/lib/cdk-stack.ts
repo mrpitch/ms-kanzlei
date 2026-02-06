@@ -1,40 +1,40 @@
-import * as cdk from 'aws-cdk-lib';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
-import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import * as route53 from 'aws-cdk-lib/aws-route53';
-import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib'
+import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
+import * as acm from 'aws-cdk-lib/aws-certificatemanager'
+import * as route53 from 'aws-cdk-lib/aws-route53'
+import * as route53Targets from 'aws-cdk-lib/aws-route53-targets'
+import * as iam from 'aws-cdk-lib/aws-iam'
+import { Construct } from 'constructs'
 
 export interface MsKanzleiStackProps extends cdk.StackProps {
-  certificate: acm.ICertificate;
-  domainName: string;
-  hostedZoneId: string;
-  githubDeployRoleName: string;
-  githubRepoRef: string;
-  regionCert: string;
-  regionMain: string;
+	certificate: acm.ICertificate
+	domainName: string
+	hostedZoneId: string
+	githubDeployRoleName: string
+	githubRepoRef: string
+	regionCert: string
+	regionMain: string
 }
 
 export class MsKanzleiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: MsKanzleiStackProps) {
-    super(scope, id, props);
+	constructor(scope: Construct, id: string, props: MsKanzleiStackProps) {
+		super(scope, id, props)
 
-    // S3 bucket for static site
-    const bucket = new s3.Bucket(this, 'SiteBucket', {
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      encryption: s3.BucketEncryption.S3_MANAGED,
-      enforceSSL: true,
-      versioned: false,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
-    });
+		// S3 bucket for static site
+		const bucket = new s3.Bucket(this, 'SiteBucket', {
+			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+			encryption: s3.BucketEncryption.S3_MANAGED,
+			enforceSSL: true,
+			versioned: false,
+			removalPolicy: cdk.RemovalPolicy.DESTROY,
+			autoDeleteObjects: true,
+		})
 
-    // CloudFront Function for URL rewriting
-    const urlRewriteFunction = new cloudfront.Function(this, 'UrlRewriteFunction', {
-      code: cloudfront.FunctionCode.fromInline(`
+		// CloudFront Function for URL rewriting
+		const urlRewriteFunction = new cloudfront.Function(this, 'UrlRewriteFunction', {
+			code: cloudfront.FunctionCode.fromInline(`
 function handler(event) {
   var request = event.request;
   var uri = request.uri;
@@ -46,131 +46,179 @@ function handler(event) {
   return request;
 }
 `),
-      runtime: cloudfront.FunctionRuntime.JS_2_0,
-    });
+			runtime: cloudfront.FunctionRuntime.JS_2_0,
+		})
 
-    // CloudFront distribution
-    const distribution = new cloudfront.Distribution(this, 'Distribution', {
-      defaultBehavior: {
-        origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-        functionAssociations: [
-          {
-            function: urlRewriteFunction,
-            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          },
-        ],
-      },
-      domainNames: [props.domainName],
-      certificate: props.certificate,
-      defaultRootObject: 'index.html',
-      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
-      minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
-      httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
-      errorResponses: [
-        {
-          httpStatus: 403,
-          responseHttpStatus: 404,
-          responsePagePath: '/404.html',
-        },
-        {
-          httpStatus: 404,
-          responseHttpStatus: 404,
-          responsePagePath: '/404.html',
-        },
-      ],
-    });
+		// CSP allowlist: add external origins here before enforcing (analytics, fonts, embeds, etc).
+		// Typical additions: script-src/connect-src/img-src/font-src/frame-src.
+		const contentSecurityPolicy = [
+			"default-src 'self'",
+			"base-uri 'self'",
+			"object-src 'none'",
+			"frame-ancestors 'none'",
+			"form-action 'self'",
+			"img-src 'self' data:",
+			"font-src 'self' data:",
+			"style-src 'self' 'unsafe-inline'",
+			"script-src 'self' 'unsafe-inline'",
+			"connect-src 'self'",
+			'upgrade-insecure-requests',
+		].join('; ')
 
-    // Route53 alias records
-    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
-      hostedZoneId: props.hostedZoneId,
-      zoneName: props.domainName,
-    });
+		const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+			this,
+			'SecurityHeadersPolicy',
+			{
+				securityHeadersBehavior: {
+					contentSecurityPolicy: {
+						contentSecurityPolicy,
+						override: true,
+					},
+					strictTransportSecurity: {
+						accessControlMaxAge: cdk.Duration.seconds(63072000),
+						includeSubdomains: true,
+						preload: true,
+						override: true,
+					},
+					contentTypeOptions: { override: true },
+					referrerPolicy: {
+						referrerPolicy: cloudfront.HeadersReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN,
+						override: true,
+					},
+					frameOptions: { frameOption: cloudfront.HeadersFrameOption.DENY, override: true },
+				},
+				customHeadersBehavior: {
+					customHeaders: [
+						{
+							header: 'Permissions-Policy',
+							value:
+								'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
+							override: true,
+						},
+					],
+				},
+			},
+		)
 
-    new route53.ARecord(this, 'AliasRecord', {
-      zone: hostedZone,
-      target: route53.RecordTarget.fromAlias(
-        new route53Targets.CloudFrontTarget(distribution),
-      ),
-    });
+		// CloudFront distribution
+		const distribution = new cloudfront.Distribution(this, 'Distribution', {
+			defaultBehavior: {
+				origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
+				viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+				cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+				responseHeadersPolicy,
+				functionAssociations: [
+					{
+						function: urlRewriteFunction,
+						eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+					},
+				],
+			},
+			domainNames: [props.domainName],
+			certificate: props.certificate,
+			defaultRootObject: 'index.html',
+			priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+			minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
+			httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
+			errorResponses: [
+				{
+					httpStatus: 403,
+					responseHttpStatus: 404,
+					responsePagePath: '/404.html',
+				},
+				{
+					httpStatus: 404,
+					responseHttpStatus: 404,
+					responsePagePath: '/404.html',
+				},
+			],
+		})
 
-    new route53.AaaaRecord(this, 'AliasRecordAAAA', {
-      zone: hostedZone,
-      target: route53.RecordTarget.fromAlias(
-        new route53Targets.CloudFrontTarget(distribution),
-      ),
-    });
+		// Route53 alias records
+		const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
+			hostedZoneId: props.hostedZoneId,
+			zoneName: props.domainName,
+		})
 
-    // Import existing GitHub OIDC provider
-    const oidcProvider = iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
-      this,
-      'GitHubOidcProvider',
-      `arn:aws:iam::${this.account}:oidc-provider/token.actions.githubusercontent.com`,
-    );
+		new route53.ARecord(this, 'AliasRecord', {
+			zone: hostedZone,
+			target: route53.RecordTarget.fromAlias(new route53Targets.CloudFrontTarget(distribution)),
+		})
 
-    // IAM role for GitHub Actions deployment
-    const deployRole = new iam.Role(this, 'GitHubDeployRole', {
-      roleName: props.githubDeployRoleName,
-      assumedBy: new iam.OpenIdConnectPrincipal(oidcProvider, {
-        StringEquals: {
-          'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-        },
-        StringLike: {
-          'token.actions.githubusercontent.com:sub': props.githubRepoRef,
-        },
-      }),
-    });
+		new route53.AaaaRecord(this, 'AliasRecordAAAA', {
+			zone: hostedZone,
+			target: route53.RecordTarget.fromAlias(new route53Targets.CloudFrontTarget(distribution)),
+		})
 
-    // S3 permissions for deploy role
-    bucket.grantReadWrite(deployRole);
-    bucket.grantDelete(deployRole);
+		// Import existing GitHub OIDC provider
+		const oidcProvider = iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+			this,
+			'GitHubOidcProvider',
+			`arn:aws:iam::${this.account}:oidc-provider/token.actions.githubusercontent.com`,
+		)
 
-    // CloudFront invalidation permission
-    deployRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['cloudfront:CreateInvalidation'],
-        resources: [
-          `arn:aws:cloudfront::${this.account}:distribution/${distribution.distributionId}`,
-        ],
-      }),
-    );
+		// IAM role for GitHub Actions deployment
+		const deployRole = new iam.Role(this, 'GitHubDeployRole', {
+			roleName: props.githubDeployRoleName,
+			assumedBy: new iam.OpenIdConnectPrincipal(oidcProvider, {
+				StringEquals: {
+					'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
+				},
+				StringLike: {
+					'token.actions.githubusercontent.com:sub': props.githubRepoRef,
+				},
+			}),
+		})
 
-    // Allow CDK CLI to read bootstrap version in both deployment regions
-    deployRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['ssm:GetParameter'],
-        resources: [
-          `arn:aws:ssm:${props.regionCert}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
-          `arn:aws:ssm:${props.regionMain}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
-        ],
-      }),
-    );
+		// S3 permissions for deploy role
+		bucket.grantReadWrite(deployRole)
+		bucket.grantDelete(deployRole)
 
-    // Allow workflow to read stack outputs for deployment
-    deployRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['cloudformation:DescribeStacks'],
-        resources: [
-          `arn:aws:cloudformation:${props.regionMain}:${this.account}:stack/MsKanzleiStack/*`,
-        ],
-      }),
-    );
+		// CloudFront invalidation permission
+		deployRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: ['cloudfront:CreateInvalidation'],
+				resources: [
+					`arn:aws:cloudfront::${this.account}:distribution/${distribution.distributionId}`,
+				],
+			}),
+		)
 
-    // Allow CDK CLI to assume bootstrap roles created by `cdk bootstrap`
-    deployRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ['sts:AssumeRole'],
-        resources: [`arn:aws:iam::${this.account}:role/cdk-hnb659fds-*-role-${this.account}-*`],
-      }),
-    );
+		// Allow CDK CLI to read bootstrap version in both deployment regions
+		deployRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: ['ssm:GetParameter'],
+				resources: [
+					`arn:aws:ssm:${props.regionCert}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+					`arn:aws:ssm:${props.regionMain}:${this.account}:parameter/cdk-bootstrap/hnb659fds/version`,
+				],
+			}),
+		)
 
-    // Outputs
-    new cdk.CfnOutput(this, 'BucketName', { value: bucket.bucketName });
-    new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
-    new cdk.CfnOutput(this, 'DistributionDomain', {
-      value: distribution.distributionDomainName,
-    });
-    new cdk.CfnOutput(this, 'DeployRoleArn', { value: deployRole.roleArn });
-  }
+		// Allow workflow to read stack outputs for deployment
+		deployRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: ['cloudformation:DescribeStacks'],
+				resources: [
+					`arn:aws:cloudformation:${props.regionMain}:${this.account}:stack/MsKanzleiStack/*`,
+				],
+			}),
+		)
+
+		// Allow CDK CLI to assume bootstrap roles created by `cdk bootstrap`
+		deployRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: ['sts:AssumeRole'],
+				resources: [`arn:aws:iam::${this.account}:role/cdk-hnb659fds-*-role-${this.account}-*`],
+			}),
+		)
+
+		// Outputs
+		new cdk.CfnOutput(this, 'BucketName', { value: bucket.bucketName })
+		new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId })
+		new cdk.CfnOutput(this, 'DistributionDomain', {
+			value: distribution.distributionDomainName,
+		})
+		new cdk.CfnOutput(this, 'DeployRoleArn', { value: deployRole.roleArn })
+	}
 }

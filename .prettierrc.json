@@ -1,9 +1,14 @@
 {
-  "singleQuote": true,
-  "useTabs": true,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "printWidth": 100,
-  "semi": false,
-  "plugins": ["prettier-plugin-tailwindcss"]
+	"singleQuote": true,
+	"useTabs": true,
+	"tabWidth": 2,
+	"trailingComma": "all",
+	"printWidth": 100,
+	"semi": false,
+	"plugins": ["prettier-plugin-tailwindcss"],
+	"tailwindStylesheet": "./src/lib/styles/globals.css",
+	"tailwindAttributes": ["className"],
+	"tailwindFunctions": ["clsx", "cn", "twMerge"],
+	"tailwindPreserveWhitespace": false,
+	"tailwindPreserveDuplicates": false
 }

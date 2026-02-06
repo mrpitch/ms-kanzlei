@@ -1,43 +1,47 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
+import { cn } from '@/lib/utils/cn'
+import { Header } from '@/components/header'
+import { Footer } from '@/components/footer'
+import { ThemeProvider } from '@/components/theme-provider'
 
-import { cn } from "@/lib/utils/cn";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { ThemeProvider } from "@/components/theme-provider";
-
-import "@/lib/styles/globals.css";
+import '@/lib/styles/globals.css'
 import { sans, serif, mono } from '@/lib/styles/fonts'
 
 export const metadata: Metadata = {
-	title: "MS Kanzlei",
-	description: "Ihre Rechtsanwaltskanzlei für kompetente rechtliche Beratung",
+	title: 'MS Kanzlei',
+	formatDetection: { telephone: false, date: false, email: false, address: false },
 	robots: {
 		index: false,
 		follow: false,
 		googleBot: {
 			index: false,
 			follow: false,
-		}
+		},
 	},
 	icons: {
-		icon: '/favicon.ico',
-		shortcut: '/favicon-16x16.png',
-		apple: '/apple-touch-icon.png',
+		icon: '/images/favicon.ico',
+		shortcut: '/images/favicon-32x32.png',
+		apple: '/images/apple-touch-icon.png',
+		other: [
+			{
+				rel: 'android-chrome-192x192',
+				url: '/images/android-chrome-192x192.png',
+			},
+		],
 	},
-};
-
+}
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode;
+	children: React.ReactNode
 }>) {
 	return (
 		<html lang="de" suppressHydrationWarning>
 			<body
 				className={cn(
-					'bg-background h-full min-h-screen font-sans antialiased',
+					'h-full min-h-screen bg-background font-sans antialiased',
 					sans.variable,
 					serif.variable,
 					mono.variable,
@@ -50,10 +54,11 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<Header />
+					<div className="bg-amber-700 h-24 w-24"></div>
 					<main>{children}</main>
 					<Footer />
 				</ThemeProvider>
 			</body>
 		</html>
-	);
+	)
 }

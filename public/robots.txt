@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://mskanzlei.mrpitch.rocks
+
+# Sitemaps
+Sitemap: https://mskanzlei.mrpitch.rocks/sitemap.xml
