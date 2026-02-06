@@ -1,215 +1,212 @@
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva, type VariantProps } from 'class-variance-authority'
 
-import { cn } from "@/lib/utils/cn"
+import { cn } from '@/lib/utils/cn'
 
-
-import configJson from '@/lib/config.json';
-import { TConfig } from '@/lib/types';
+import configJson from '@/lib/config.json'
+import { TConfig } from '@/lib/types'
 
 import Picture from 'next-export-optimize-images/picture'
 
-
-
 // Color variants for the main wrapper
-const testimonialColorVariants = cva("", {
+const testimonialColorVariants = cva('', {
 	variants: {
 		variant: {
-			primary: "bg-primary text-primary-foreground",
-			secondary: "bg-secondary text-secondary-foreground",
-			outline: "bg-transparent border border-border text-foreground",
+			primary: 'bg-primary text-primary-foreground',
+			secondary: 'bg-secondary text-secondary-foreground',
+			outline: 'bg-transparent border border-border text-foreground',
 		},
 	},
 	defaultVariants: {
-		variant: "primary",
+		variant: 'primary',
 	},
 })
 
 // Size variants for the main wrapper padding
-const testimonialSizeVariants = cva("", {
+const testimonialSizeVariants = cva('', {
 	variants: {
 		size: {
-			small: "pb-10 sm:pb-14 xl:pb-0",
-			large: "pb-20 sm:pb-24 xl:pb-0",
+			small: 'pb-10 sm:pb-14 xl:pb-0',
+			large: 'pb-20 sm:pb-24 xl:pb-0',
 		},
 	},
 	defaultVariants: {
-		size: "small",
+		size: 'small',
 	},
 })
 
 // Size variants for the outer wrapper
-const testimonialOuterSizeVariants = cva("py-16 md:py-24 lg:py-32", {
+const testimonialOuterSizeVariants = cva('py-16 md:py-24 lg:py-32', {
 	variants: {
 		size: {
-			small: "pt-14 sm:pt-18 xl:pb-18",
-			large: "pt-24 sm:pt-32 xl:pb-32",
+			small: 'pt-14 sm:pt-18 xl:pb-18',
+			large: 'pt-24 sm:pt-32 xl:pb-32',
 		},
 	},
 	defaultVariants: {
-		size: "small",
+		size: 'small',
 	},
 })
 
 // Size variants for the container
 const testimonialContainerSizeVariants = cva(
-	"mx-auto flex flex-col items-center px-6 lg:px-8 xl:flex-row xl:items-stretch",
+	'mx-auto flex flex-col items-center px-6 lg:px-8 xl:flex-row xl:items-stretch',
 	{
 		variants: {
 			size: {
-				small: "max-w-5xl gap-x-6 gap-y-8 sm:gap-y-6",
-				large: "max-w-7xl gap-x-8 gap-y-10 sm:gap-y-8",
+				small: 'max-w-5xl gap-x-6 gap-y-8 sm:gap-y-6',
+				large: 'max-w-7xl gap-x-8 gap-y-10 sm:gap-y-8',
 			},
 		},
 		defaultVariants: {
-			size: "small",
+			size: 'small',
 		},
-	}
+	},
 )
 
 // Size variants for the image wrapper
-const testimonialImageWrapperSizeVariants = cva("w-full xl:flex-none", {
+const testimonialImageWrapperSizeVariants = cva('w-full xl:flex-none', {
 	variants: {
 		size: {
-			small: "-mt-7 max-w-md xl:-mb-7 xl:w-72",
-			large: "-mt-8 max-w-2xl xl:-mb-8 xl:w-96",
+			small: '-mt-7 max-w-md xl:-mb-7 xl:w-72',
+			large: '-mt-8 max-w-2xl xl:-mb-8 xl:w-96',
 		},
 	},
 	defaultVariants: {
-		size: "small",
+		size: 'small',
 	},
 })
 
 // Size variants for the image aspect ratio
 const testimonialImageAspectSizeVariants = cva(
-	"relative h-full after:absolute after:inset-0 after:rounded-2xl after:inset-ring after:inset-ring-white/15 md:-mx-8 xl:mx-0 xl:aspect-auto",
+	'relative h-full after:absolute after:inset-0 after:rounded-2xl after:inset-ring after:inset-ring-white/15 md:-mx-8 xl:mx-0 xl:aspect-auto',
 	{
 		variants: {
 			size: {
-				small: "aspect-3/2",
-				large: "aspect-2/1",
+				small: 'aspect-3/2',
+				large: 'aspect-2/1',
 			},
 		},
 		defaultVariants: {
-			size: "small",
+			size: 'small',
 		},
-	}
+	},
 )
 
 // Size variants for the content area
-const testimonialContentSizeVariants = cva(
-	"w-full max-w-2xl xl:max-w-none xl:flex-auto",
-	{
-		variants: {
-			size: {
-				small: "xl:px-12 xl:py-14",
-				large: "xl:px-16 xl:py-24",
-			},
-		},
-		defaultVariants: {
-			size: "small",
-		},
-	}
-)
-
-// Size variants for the figure
-const testimonialFigureSizeVariants = cva("relative isolate", {
+const testimonialContentSizeVariants = cva('w-full max-w-2xl xl:max-w-none xl:flex-auto', {
 	variants: {
 		size: {
-			small: "pt-4 sm:pt-8",
-			large: "pt-6 sm:pt-12",
+			small: 'xl:px-12 xl:py-14',
+			large: 'xl:px-16 xl:py-24',
 		},
 	},
 	defaultVariants: {
-		size: "small",
+		size: 'small',
+	},
+})
+
+// Size variants for the figure
+const testimonialFigureSizeVariants = cva('relative isolate', {
+	variants: {
+		size: {
+			small: 'pt-4 sm:pt-8',
+			large: 'pt-6 sm:pt-12',
+		},
+	},
+	defaultVariants: {
+		size: 'small',
 	},
 })
 
 // Text variants with both color and size
-const testimonialTextVariants = cva("font-semibold", {
+const testimonialTextVariants = cva('font-semibold', {
 	variants: {
 		variant: {
-			primary: "text-primary-foreground",
-			secondary: "text-secondary-foreground",
-			outline: "text-foreground",
+			primary: 'text-primary-foreground',
+			secondary: 'text-secondary-foreground',
+			outline: 'text-foreground',
 		},
 		size: {
-			small: "text-base/7 sm:text-lg/8",
-			large: "text-xl/8 sm:text-2xl/9",
+			small: 'text-base/7 sm:text-lg/8',
+			large: 'text-xl/8 sm:text-2xl/9',
 		},
 	},
 	defaultVariants: {
-		variant: "primary",
-		size: "small",
+		variant: 'primary',
+		size: 'small',
 	},
 })
 
 // Muted text variants (color only)
-const testimonialMutedTextVariants = cva("mt-1", {
+const testimonialMutedTextVariants = cva('mt-1', {
 	variants: {
 		variant: {
-			primary: "text-primary-foreground/60",
-			secondary: "text-secondary-foreground/60",
-			outline: "text-muted-foreground",
+			primary: 'text-primary-foreground/60',
+			secondary: 'text-secondary-foreground/60',
+			outline: 'text-muted-foreground',
 		},
 	},
 	defaultVariants: {
-		variant: "primary",
+		variant: 'primary',
 	},
 })
 
 // Quote icon variants with both color and size
-const testimonialQuoteVariants = cva("absolute top-0 left-0 -z-10", {
+const testimonialQuoteVariants = cva('absolute top-0 left-0 -z-10', {
 	variants: {
 		variant: {
-			primary: "stroke-primary-foreground/20",
-			secondary: "stroke-secondary-foreground/20",
-			outline: "stroke-foreground/20",
+			primary: 'stroke-primary-foreground/20',
+			secondary: 'stroke-secondary-foreground/20',
+			outline: 'stroke-foreground/20',
 		},
 		size: {
-			small: "h-20",
-			large: "h-32",
+			small: 'h-20',
+			large: 'h-32',
 		},
 	},
 	defaultVariants: {
-		variant: "primary",
-		size: "small",
+		variant: 'primary',
+		size: 'small',
 	},
 })
 
 // Figcaption size variants
-const testimonialFigcaptionSizeVariants = cva("", {
+const testimonialFigcaptionSizeVariants = cva('', {
 	variants: {
 		size: {
-			small: "mt-6 text-sm",
-			large: "mt-8 text-base",
+			small: 'mt-6 text-sm',
+			large: 'mt-8 text-base',
 		},
 	},
 	defaultVariants: {
-		size: "small",
+		size: 'small',
 	},
 })
 
-const config: TConfig = configJson as TConfig;
-const testimonial = config.testimonials[0];
+const config: TConfig = configJson as TConfig
+const testimonial = config.testimonials[0]
 
 interface TestimonialProps
-	extends VariantProps<typeof testimonialColorVariants>,
-	VariantProps<typeof testimonialSizeVariants> {
+	extends
+		VariantProps<typeof testimonialColorVariants>,
+		VariantProps<typeof testimonialSizeVariants> {
 	className?: string
 }
 
 export default function Testimonial({ variant, size, className }: TestimonialProps) {
 	// In dark mode, override to outline variant styling
-	const darkModeOverride = "dark:bg-transparent dark:border dark:border-border dark:text-foreground";
-	
+	const darkModeOverride = 'dark:bg-transparent dark:border dark:border-border dark:text-foreground'
+
 	return (
 		<div className={testimonialOuterSizeVariants({ size })}>
-			<div className={cn(
-				testimonialColorVariants({ variant }), 
-				testimonialSizeVariants({ size }), 
-				darkModeOverride,
-				className
-			)}>
+			<div
+				className={cn(
+					testimonialColorVariants({ variant }),
+					testimonialSizeVariants({ size }),
+					darkModeOverride,
+					className,
+				)}
+			>
 				<div className="container mx-auto px-6 lg:px-20">
 					<div className={testimonialContainerSizeVariants({ size })}>
 						<div className={testimonialImageWrapperSizeVariants({ size })}>
@@ -230,7 +227,7 @@ export default function Testimonial({ variant, size, className }: TestimonialPro
 									aria-hidden="true"
 									className={cn(
 										testimonialQuoteVariants({ variant, size }),
-										"dark:stroke-foreground/20"
+										'dark:stroke-foreground/20',
 									)}
 								>
 									<path
@@ -239,23 +236,28 @@ export default function Testimonial({ variant, size, className }: TestimonialPro
 									/>
 									<use x={86} href="#b56e9dab-6ccb-4d32-ad02-6b4bb5d9bbeb" />
 								</svg>
-								<blockquote className={cn(
-									testimonialTextVariants({ variant, size }),
-									"dark:text-foreground"
-								)}>
-									<p>
-										{testimonial.text}
-									</p>
+								<blockquote
+									className={cn(testimonialTextVariants({ variant, size }), 'dark:text-foreground')}
+								>
+									<p>{testimonial.text}</p>
 								</blockquote>
 								<figcaption className={testimonialFigcaptionSizeVariants({ size })}>
-									<div className={cn(
-										testimonialTextVariants({ variant, size }),
-										"dark:text-foreground"
-									)}>{testimonial.name}</div>
-									<div className={cn(
-										testimonialMutedTextVariants({ variant }),
-										"dark:text-muted-foreground"
-									)}>{testimonial.title}</div>
+									<div
+										className={cn(
+											testimonialTextVariants({ variant, size }),
+											'dark:text-foreground',
+										)}
+									>
+										{testimonial.name}
+									</div>
+									<div
+										className={cn(
+											testimonialMutedTextVariants({ variant }),
+											'dark:text-muted-foreground',
+										)}
+									>
+										{testimonial.title}
+									</div>
 								</figcaption>
 							</figure>
 						</div>

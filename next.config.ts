@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 import withExportImages from 'next-export-optimize-images'
 
 /** @type {import('next').NextConfig} */

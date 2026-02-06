@@ -33,13 +33,13 @@ pnpm nuke         # Remove node_modules, lock file, .next, and out directories
 ### Routing
 
 - `/` renders content/home.mdx
-- `/[slug]` renders matching content/*.mdx file (excluding home)
+- `/[slug]` renders matching content/\*.mdx file (excluding home)
 - Static export generates all pages at build time
 
 ### Styling
 
 - Tailwind CSS v4 with custom theme variables
-- Theme files in `src/lib/styles/` (variables-*.css for different themes)
+- Theme files in `src/lib/styles/` (variables-\*.css for different themes)
 - Currently using "gingerhero" theme (imported in globals.css)
 - To switch themes, change the import in `globals.css` (available: amethysthaze, bubblegum, candyland, gingerhero, nature, sageandsand, vintagepaper)
 - `cn()` utility in `src/lib/utils.ts` for class merging

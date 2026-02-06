@@ -1,23 +1,27 @@
-"use client"
-import { usePathname } from "next/navigation";
-import configJson from '@/lib/config.json';
-import { TConfig } from '@/lib/types';
-import { Phone, Mail, MapPin } from "lucide-react";
+'use client'
+import { usePathname } from 'next/navigation'
+import configJson from '@/lib/config.json'
+import { TConfig } from '@/lib/types'
+import { Phone, Mail, MapPin } from 'lucide-react'
 
-
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
-
+import { Button } from '@/components/ui/button'
+import {
+	Popover,
+	PopoverContent,
+	PopoverDescription,
+	PopoverHeader,
+	PopoverTitle,
+	PopoverTrigger,
+} from '@/components/ui/popover'
 
 export function ContactPopover() {
-
-	const isHome = usePathname() === '/';
+	const isHome = usePathname() === '/'
 
 	if (isHome) {
-		return null;
+		return null
 	}
-	const config: TConfig = configJson as TConfig;
-	const contact = config.contact;
+	const config: TConfig = configJson as TConfig
+	const contact = config.contact
 
 	return (
 		<Popover>
@@ -28,32 +32,33 @@ export function ContactPopover() {
 			</PopoverTrigger>
 			<PopoverContent align="end">
 				<PopoverHeader>
-					<PopoverTitle className="text-primary text-2xl font-bold">Kontakt</PopoverTitle>
+					<PopoverTitle className="text-2xl font-bold text-secondary">Kontakt</PopoverTitle>
 					<PopoverDescription className="grid grid-cols-1 gap-4 pt-6">
 						<a
 							href={`tel:${contact.phone}`}
-							className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors group"
+							className="group flex items-center gap-4 text-muted-foreground transition-colors hover:text-foreground"
 						>
-							<span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-								<Phone className="h-5 w-5 text-primary" />
+							<span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20 dark:bg-secondary dark:group-hover:bg-primary">
+								<Phone className="h-5 w-5 text-primary dark:group-hover:text-secondary" />
 							</span>
 							<span>{contact.phone}</span>
 						</a>
 						<a
 							href={`mailto:${contact.email}`}
-							className="flex items-center gap-4 text-muted-foreground hover:text-foreground transition-colors group"
+							className="group flex items-center gap-4 text-muted-foreground transition-colors hover:text-foreground"
 						>
-							<span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-								<Mail className="h-5 w-5 text-primary" />
+							<span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20 dark:bg-secondary dark:group-hover:bg-primary">
+								<Mail className="h-5 w-5 text-primary dark:group-hover:text-secondary" />
 							</span>
 							<span>{contact.email}</span>
 						</a>
 						<span className="flex items-center gap-4 text-muted-foreground">
-							<span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-								<MapPin className="h-5 w-5 text-primary" />
+							<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-secondary dark:group-hover:bg-primary">
+								<MapPin className="h-5 w-5 text-primary dark:group-hover:text-secondary" />
 							</span>
 							<span>
-								{contact.street}<br />
+								{contact.street}
+								<br />
 								{contact.zip} {contact.city}
 							</span>
 						</span>

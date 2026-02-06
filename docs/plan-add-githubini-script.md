@@ -9,14 +9,14 @@ Move hardcoded AWS variables from CDK files to environment variables:
 
 ## Variables to Extract
 
-| Variable | Current Location | Current Value |
-|----------|-----------------|---------------|
-| `DOMAIN_NAME` | cdk/bin/cdk.ts:8 | `mskanzlei.mrpitch.rocks` |
-| `HOSTED_ZONE_ID` | cdk/bin/cdk.ts:9 | `Z101967436NINE8V1MY7N` |
-| `AWS_REGION_CERT` | cdk/bin/cdk.ts:13 | `us-east-1` |
-| `AWS_REGION_MAIN` | cdk/bin/cdk.ts:20 | `eu-central-1` |
-| `GITHUB_DEPLOY_ROLE_NAME` | cdk/lib/cdk-stack.ts:110 | `ms-kanzlei-github-deploy` |
-| `GITHUB_REPO_REF` | cdk/lib/cdk-stack.ts:117 | `repo:mrpitch/ms-kanzlei:ref:refs/heads/main` |
+| Variable                  | Current Location         | Current Value                                 |
+| ------------------------- | ------------------------ | --------------------------------------------- |
+| `DOMAIN_NAME`             | cdk/bin/cdk.ts:8         | `mskanzlei.mrpitch.rocks`                     |
+| `HOSTED_ZONE_ID`          | cdk/bin/cdk.ts:9         | `Z101967436NINE8V1MY7N`                       |
+| `AWS_REGION_CERT`         | cdk/bin/cdk.ts:13        | `us-east-1`                                   |
+| `AWS_REGION_MAIN`         | cdk/bin/cdk.ts:20        | `eu-central-1`                                |
+| `GITHUB_DEPLOY_ROLE_NAME` | cdk/lib/cdk-stack.ts:110 | `ms-kanzlei-github-deploy`                    |
+| `GITHUB_REPO_REF`         | cdk/lib/cdk-stack.ts:117 | `repo:mrpitch/ms-kanzlei:ref:refs/heads/main` |
 
 All are non-sensitive → GitHub **vars** (not secrets)
 
@@ -31,34 +31,34 @@ All are non-sensitive → GitHub **vars** (not secrets)
 ### Modify Existing Files
 
 4. **`cdk/package.json`** — add `dotenv` dependency
-2. **`cdk/bin/cdk.ts`** — import config, remove hardcoded values
-3. **`cdk/lib/cdk-stack.ts`** — extend props interface, use props for roleName/repoRef
-4. **`.github/workflows/deploy.yml`** — inject GitHub vars into `deploy-cdk` job env
+5. **`cdk/bin/cdk.ts`** — import config, remove hardcoded values
+6. **`cdk/lib/cdk-stack.ts`** — extend props interface, use props for roleName/repoRef
+7. **`.github/workflows/deploy.yml`** — inject GitHub vars into `deploy-cdk` job env
 
 ## Implementation Details
 
 ### 1. `cdk/lib/config.ts`
 
 ```typescript
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+import * as dotenv from 'dotenv'
+import * as path from 'path'
 
-dotenv.config({ path: path.join(__dirname, '../.env.cdk') });
+dotenv.config({ path: path.join(__dirname, '../.env.cdk') })
 
 function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing env: ${name}`);
-  return value;
+	const value = process.env[name]
+	if (!value) throw new Error(`Missing env: ${name}`)
+	return value
 }
 
 export const config = {
-  domainName: requireEnv('DOMAIN_NAME'),
-  hostedZoneId: requireEnv('HOSTED_ZONE_ID'),
-  regionCert: requireEnv('AWS_REGION_CERT'),
-  regionMain: requireEnv('AWS_REGION_MAIN'),
-  githubDeployRoleName: requireEnv('GITHUB_DEPLOY_ROLE_NAME'),
-  githubRepoRef: requireEnv('GITHUB_REPO_REF'),
-};
+	domainName: requireEnv('DOMAIN_NAME'),
+	hostedZoneId: requireEnv('HOSTED_ZONE_ID'),
+	regionCert: requireEnv('AWS_REGION_CERT'),
+	regionMain: requireEnv('AWS_REGION_MAIN'),
+	githubDeployRoleName: requireEnv('GITHUB_DEPLOY_ROLE_NAME'),
+	githubRepoRef: requireEnv('GITHUB_REPO_REF'),
+}
 ```
 
 ### 2. `cdk/.env.cdk.example`

@@ -57,17 +57,17 @@ cdk/test/cdk.test.ts          ← rewrite: real assertions
 
 ```typescript
 const certStack = new MsKanzleiCertStack(app, 'MsKanzleiCertStack', {
-  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' },
-  crossRegionReferences: true,
-  domainName: '<DOMAIN_NAME>',
-});
+	env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' },
+	crossRegionReferences: true,
+	domainName: '<DOMAIN_NAME>',
+})
 
 new MsKanzleiStack(app, 'MsKanzleiStack', {
-  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'eu-central-1' },
-  crossRegionReferences: true,
-  certificate: certStack.certificate,
-  domainName: '<DOMAIN_NAME>',
-});
+	env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'eu-central-1' },
+	crossRegionReferences: true,
+	certificate: certStack.certificate,
+	domainName: '<DOMAIN_NAME>',
+})
 ```
 
 ### `cdk/lib/cert-stack.ts` (NEW)
@@ -88,14 +88,14 @@ new MsKanzleiStack(app, 'MsKanzleiStack', {
 
 ```javascript
 function handler(event) {
-  var request = event.request;
-  var uri = request.uri;
-  if (uri.endsWith('/')) {
-    request.uri = uri + 'index.html';
-  } else if (!uri.includes('.', uri.lastIndexOf('/'))) {
-    request.uri = uri + '.html';
-  }
-  return request;
+	var request = event.request
+	var uri = request.uri
+	if (uri.endsWith('/')) {
+		request.uri = uri + 'index.html'
+	} else if (!uri.includes('.', uri.lastIndexOf('/'))) {
+		request.uri = uri + '.html'
+	}
+	return request
 }
 ```
 

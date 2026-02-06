@@ -14,52 +14,57 @@ Before generating specific rules, you need two foundational rules that enable th
 
 Create `.cursor/rules/cursor-rules.mdc`:
 
-```markdown
+````markdown
 ---
 description: How to add or edit Cursor rules in our project
 globs:
 alwaysApply: false
 ---
+
 # Cursor Rules Location
 
 How to add new cursor rules to the project
 
 1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
-    ```
-    .cursor/rules/
-    ├── your-rule-name.mdc
-    ├── another-rule.mdc
-    └── ...
-    ```
+
+   ```
+   .cursor/rules/
+   ├── your-rule-name.mdc
+   ├── another-rule.mdc
+   └── ...
+   ```
 
 2. Follow the naming convention:
-    - Use kebab-case for filenames
-    - Always use .mdc extension
-    - Make names descriptive of the rule's purpose
+   - Use kebab-case for filenames
+   - Always use .mdc extension
+   - Make names descriptive of the rule's purpose
 
 3. Directory structure:
-    ```
-    PROJECT_ROOT/
-    ├── .cursor/
-    │   └── rules/
-    │       ├── your-rule-name.mdc
-    │       └── ...
-    └── ...
-    ```
+
+   ```
+   PROJECT_ROOT/
+   ├── .cursor/
+   │   └── rules/
+   │       ├── your-rule-name.mdc
+   │       └── ...
+   └── ...
+   ```
 
 4. Never place rule files:
-    - In the project root
-    - In subdirectories outside .cursor/rules
-    - In any other location
+   - In the project root
+   - In subdirectories outside .cursor/rules
+   - In any other location
 
 5. Cursor rules have the following structure:
 
+---
+
+description: Short description of the rule's purpose
+globs: optional/path/pattern/\*_/_
+alwaysApply: false
 
 ---
-description: Short description of the rule's purpose
-globs: optional/path/pattern/**/*
-alwaysApply: false
----
+
 # Rule Title
 
 Main content explaining the rule with markdown formatting.
@@ -73,26 +78,27 @@ Example:
 ```typescript
 // Good example
 function goodExample() {
-  // Implementation following guidelines
+	// Implementation following guidelines
 }
 
 // Bad example
 function badExample() {
-  // Implementation not following guidelines
+	// Implementation not following guidelines
 }
 ```
-
+````
 
 ### 2. Self-Improvement Rule
 
 Create `.cursor/rules/self-improvement.mdc`:
 
-```markdown
+````markdown
 ---
 description: Guidelines for continuously improving Cursor rules based on emerging code patterns and best practices.
 globs: **/*
 alwaysApply: true
 ---
+
 ## Rule Improvement Triggers
 
 - New code patterns not covered by existing rules
@@ -102,6 +108,7 @@ alwaysApply: true
 - Emerging best practices in the codebase
 
 # Analysis Process:
+
 - Compare new code with existing rules
 - Identify patterns that should be standardized
 - Look for references to external documentation
@@ -127,9 +134,10 @@ alwaysApply: true
   ```typescript
   // If you see repeated patterns like:
   const data = await prisma.user.findMany({
-    select: { id: true, email: true },
-    where: { status: 'ACTIVE' }
-  });
+  	select: { id: true, email: true },
+  	where: { status: 'ACTIVE' },
+  })
+  ```
 
 - **Rule Quality Checks:**
 - Rules should be actionable and specific
@@ -160,13 +168,14 @@ alwaysApply: true
 - Document breaking changes
 
 Follow [cursor-rules.mdc](mdc:.cursor/rules/cursor-rules.mdc) for proper rule formatting and structure.
-```
+````
 
 ## Core Generation Prompts
 
 ### 1. Project Structure Analysis
 
 **Prompt:**
+
 ```
 @cursor-rules.mdc List all source files and folders in the project,
 and create a new cursor rule outlining the directory structure and important files and folders.
@@ -175,6 +184,7 @@ and create a new cursor rule outlining the directory structure and important fil
 **Purpose:** Creates a comprehensive overview of your project structure, helping AI understand the codebase organization and preventing duplicate file listings in future conversations.
 
 **Output:** A rule file like `.cursor/rules/project-structure.mdc` that documents:
+
 - Root directory structure
 - Source code organization
 - Important configuration files
@@ -183,6 +193,7 @@ and create a new cursor rule outlining the directory structure and important fil
 ### 2. Technology Stack Documentation
 
 **Prompt:**
+
 ```
 @cursor-rules.mdc @package.json Analyze all major dependencies
 and create a cursor rule outlining the stack of the application
@@ -192,6 +203,7 @@ and the versions I'm using, and any remarks on best practices on those versions.
 **Purpose:** Documents your application's technology stack, dependency versions, and best practices, ensuring consistent technology usage across the project.
 
 **Output:** A rule file like `.cursor/rules/application-stack.mdc` that covers:
+
 - Core dependencies and versions
 - Technology stack overview
 - Best practices and recommendations
@@ -200,6 +212,7 @@ and the versions I'm using, and any remarks on best practices on those versions.
 ### 3. Component Pattern Analysis
 
 **Prompt:**
+
 ```
 @cursor-rules.mdc @components/ui/button.tsx
 /Generate Cursor Rules
@@ -209,6 +222,7 @@ I want to generate a cursor rule for this React component. Please analyze it car
 **Purpose:** Analyzes specific component files to extract coding conventions, patterns, and best practices that can be applied to similar components.
 
 **Output:** A rule file like `.cursor/rules/react-component-conventions.mdc` that documents:
+
 - Component architecture patterns
 - TypeScript conventions
 - Styling approaches
@@ -219,6 +233,7 @@ I want to generate a cursor rule for this React component. Please analyze it car
 ### 4. Framework-Specific Rules
 
 **Prompt:**
+
 ```
 @cursor-rules.mdc @components/ui/tabs.tsx
 /Generate Cursor Rules
@@ -230,6 +245,7 @@ I want to generate a cursor rule for this Radix UI component. Please analyze it 
 ### 5. Integration Pattern Rules
 
 **Prompt:**
+
 ```
 @cursor-rules.mdc @lib/fumadocs/source.ts
 /Generate Cursor Rules
@@ -251,6 +267,7 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 **Customization options:**
 
 1. **Focus on specific aspects:**
+
    ```
    Please focus on the error handling patterns
    Please extract the TypeScript conventions
@@ -259,6 +276,7 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
    ```
 
 2. **Reference existing rules:**
+
    ```
    @cursor-rules.mdc @existing-rule.mdc @your-file.ts
    /Generate Cursor Rules
@@ -275,6 +293,7 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 ## Rule Organization Strategy
 
 ### For Small Projects
+
 ```
 .cursor/rules/
 ├── cursor-rules.mdc
@@ -285,6 +304,7 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 ```
 
 ### For Large Projects/Monorepos
+
 ```
 .cursor/rules/
 ├── foundational/
@@ -307,21 +327,25 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 ## Best Practices for Rule Generation
 
 ### 1. Use Your Best Code as Examples
+
 - Always use well-written, production-ready files
 - Avoid using files with known issues or anti-patterns
 - The AI will extract patterns and write them better than you can
 
 ### 2. Focus on Recurring Patterns
+
 - Don't create rules for one-off implementations
 - Look for patterns that appear in 3+ files
 - Focus on common sources of bugs or confusion
 
 ### 3. Keep Rules Actionable
+
 - Rules should be specific enough to follow
 - Include both good and bad examples
 - Provide clear guidelines, not just descriptions
 
 ### 4. Reference External Documentation
+
 - Link to official documentation when relevant
 - Include version information for libraries
 - Reference related rules within your project
@@ -329,16 +353,19 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 ## Common Mistakes to Avoid
 
 ### 1. Over-Generating Rules
+
 - Don't create a rule for every single file
 - Focus on patterns that repeat across multiple files
 - Quality over quantity
 
 ### 2. Rules That Are Too Specific
+
 - Avoid rules that only apply to one file
 - Rules should be general enough to apply to similar situations
 - Focus on transferable patterns
 
 ### 3. Forgetting to Update Rules
+
 - Rules become outdated as your codebase evolves
 - Use the self-improvement rule to identify when updates are needed
 - Keep examples synchronized with current code
@@ -346,6 +373,7 @@ I want to generate a cursor rule for this [file type/component/service]. Please 
 ## Scaling to Large Codebases
 
 ### 1. Domain-Specific Rules
+
 Group rules by domain (frontend, backend, integration) and use glob patterns to auto-attach them:
 
 ```markdown
@@ -357,11 +385,13 @@ alwaysApply: false
 ```
 
 ### 2. Team Collaboration
+
 - Share rules with team members working on the same codebase
 - Rules serve as living documentation of team coding standards
 - Use version control to track rule evolution
 
 ### 3. Continuous Improvement
+
 - Monitor code review comments for new patterns
 - Track common development questions
 - Update rules after major refactors
@@ -369,15 +399,19 @@ alwaysApply: false
 ## FAQ
 
 ### How many rules should I have?
+
 Start with 5-10 core rules covering your main patterns. You can always add more as your project grows. Quality over quantity.
 
 ### Should I commit rules to Git?
+
 Absolutely! Cursor rules are part of your project's development infrastructure. Treat them like any other configuration file.
 
 ### Can I use this approach with other AI coding tools?
+
 The specific `/Generate Cursor Rules` command is Cursor-specific, but the generated rules should work everywhere. You can copy and paste them into your favorite AI coding tool.
 
 ### How often should I update rules?
+
 - Monthly: Check for security updates and new patterns
 - Quarterly: Review major version updates
 - Immediately: When critical bugs or patterns are discovered
@@ -385,6 +419,7 @@ The specific `/Generate Cursor Rules` command is Cursor-specific, but the genera
 ## Conclusion
 
 This systematic approach to generating Cursor rules eliminates the need for manual writing while ensuring your rules are:
+
 - Based on actual code patterns
 - Project-specific and relevant
 - Easy to maintain and update

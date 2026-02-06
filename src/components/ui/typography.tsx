@@ -3,8 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils/cn'
 
 export interface ITypographyProps
-	extends React.HTMLAttributes<HTMLElement>,
-	VariantProps<typeof typographyVariants> {
+	extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof typographyVariants> {
 	children: React.ReactNode
 	as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'label'
 	size?: 'sm' | 'xs' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'

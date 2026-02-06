@@ -43,18 +43,18 @@ clarity, correctness, and maintainability.
 
     ```tsx
     function handleClick() {
-      // ...
+    	// ...
     }
 
-    <button onClick={handleClick} />;
+    ;<button onClick={handleClick} />
     ```
 
   - Over:
     ```tsx
     <button
-      onClick={() => {
-        /* ... */
-      }}
+    	onClick={() => {
+    		/* ... */
+    	}}
     />
     ```
 
