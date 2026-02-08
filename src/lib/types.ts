@@ -19,6 +19,22 @@ type TTestimonial = {
 	text: string
 	image: string
 }
+type TCookie = {
+	title: string
+	description: string
+	consentDescription: string
+	acceptLabel: string
+	declineLabel: string
+	learnMoreLabel: string
+	learnMoreHref: string
+	cookieName: string
+	acceptValue: string
+	declineValue: string
+	maxAgeDays: number
+	path: string
+	sameSite: 'Lax' | 'Strict' | 'None'
+	secure: boolean
+}
 type TConfig = {
 	title: string
 	description: string
@@ -26,5 +42,6 @@ type TConfig = {
 	legalNavItems: TNavItem[]
 	contact: TContact
 	testimonials: TTestimonial[]
+	cookie: TCookie
 }
 export type { TConfig }

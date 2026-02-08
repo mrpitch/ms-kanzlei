@@ -45,5 +45,21 @@
 			"text": "Gravida quam mi erat tortor neque molestie. Auctor aliquet at porttitor a enim nunc suscipit tincidunt nunc. Et non lorem tortor posuere. Nunc eu scelerisque interdum eget tellus non nibh scelerisque bibendum.",
 			"image": "/images/rechtsanwalt-mark-schilling.jpg"
 		}
-	]
+	],
+	"cookie": {
+		"title": "Wir verwenden Cookies",
+		"description": "Wir verwenden Cookies, um sicherzustellen, dass Sie die bestmögliche Erfahrung auf unserer Website machen. Weitere Informationen darüber, wie wir Cookies verwenden, finden Sie in unserer Cookie-Richtlinie.",
+		"consentDescription": "Durch Klicken auf &quot;Akzeptieren&quot; stimmen Sie der Verwendung von Cookies zu.",
+		"acceptLabel": "Annehmen",
+		"declineLabel": "Nur notwendige",
+		"learnMoreLabel": "Mehr erfahren",
+		"learnMoreHref": "/datenschutz",
+		"cookieName": "cookie_consent",
+		"acceptValue": "accepted",
+		"declineValue": "declined",
+		"maxAgeDays": 90,
+		"path": "/",
+		"sameSite": "Lax",
+		"secure": true
+	}
 }

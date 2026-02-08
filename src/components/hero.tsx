@@ -17,7 +17,7 @@ export function HeroSection({
 	const contact = config.contact
 	return (
 		<div className="relative">
-			<Container className="py-16 md:py-24 lg:py-32">
+			<Container className="py-12 md:py-16 lg:py-24">
 				<div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
 					{/* Left Column - Text Content */}
 					<div className="mx-auto max-w-xl text-center text-primary lg:text-left dark:text-secondary">
