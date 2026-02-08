@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-
 import { cn } from '@/lib/utils/cn'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
+import { CookieConsent } from '@/components/cookie-consent'
 
 import '@/lib/styles/globals.css'
 import { sans, serif, mono } from '@/lib/styles/fonts'
@@ -54,9 +54,9 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<Header />
-					<div className="bg-amber-700 h-24 w-24"></div>
 					<main>{children}</main>
 					<Footer />
+					<CookieConsent variant="default" />
 				</ThemeProvider>
 			</body>
 		</html>

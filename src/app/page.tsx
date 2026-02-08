@@ -34,7 +34,7 @@ export default function Home() {
 	return (
 		<>
 			{homeContent && <CustomMDX source={homeContent.content} />}
-			<Container as="section" className="my-12">
+			<Container as="section" className="mb-12">
 				<h2 className="mb-8 font-serif text-3xl font-bold tracking-tight">Rechtsgebiete</h2>
 				<div className="grid gap-6 md:grid-cols-2">
 					{posts
