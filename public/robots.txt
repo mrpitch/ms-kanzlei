@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://mskanzlei.mrpitch.rocks
+Host: https://ms-kanzlei.de
 
 # Sitemaps
-Sitemap: https://mskanzlei.mrpitch.rocks/sitemap.xml
+Sitemap: https://ms-kanzlei.de/sitemap.xml
