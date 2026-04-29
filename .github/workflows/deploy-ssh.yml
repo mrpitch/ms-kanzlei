@@ -48,7 +48,7 @@ jobs:
           port: ${{ vars.SSH_PORT || '22' }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: rm -rf /var/www/html/out
+          script: rm -rf html/out
 
       - name: Upload site files
         uses: appleboy/scp-action@v0.1.7
@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: out/
-          target: /var/www/html/
+          target: html/
 
       - name: Write .htaccess
         uses: appleboy/ssh-action@v1.0.3
@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cat > /var/www/html/.htaccess << 'HTACCESS'
+            cat > html/.htaccess << 'HTACCESS'
             RewriteEngine On
 
             # Root
