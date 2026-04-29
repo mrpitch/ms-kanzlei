@@ -1,0 +1,47 @@
+name: Destroy AWS Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type DESTROY to confirm full teardown (irreversible)'
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy:
+    if: github.event.inputs.confirm == 'DESTROY'
+    runs-on: ubuntu-latest
+    env:
+      DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+      HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+      AWS_REGION_CERT: ${{ vars.AWS_REGION_CERT }}
+      AWS_REGION_MAIN: ${{ vars.AWS_REGION_MAIN }}
+      DEPLOY_ROLE_NAME: ${{ vars.DEPLOY_ROLE_NAME }}
+      DEPLOY_REPO_REF: ${{ vars.DEPLOY_REPO_REF }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: cdk/pnpm-lock.yaml
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION_MAIN }}
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: cdk
+
+      - name: Destroy all CDK stacks
+        run: pnpm cdk destroy --all --force
+        working-directory: cdk
