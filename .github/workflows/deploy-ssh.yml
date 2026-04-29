@@ -1,0 +1,99 @@
+name: Deploy (SSH)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: out/
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-build
+          path: out/
+
+      - name: Remove old site files
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          port: ${{ vars.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: rm -rf /var/www/html/out
+
+      - name: Upload site files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.SSH_HOST }}
+          port: ${{ vars.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: out/
+          target: /var/www/html/
+
+      - name: Write .htaccess
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.SSH_HOST }}
+          port: ${{ vars.SSH_PORT || '22' }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cat > /var/www/html/.htaccess << 'HTACCESS'
+            RewriteEngine On
+
+            # Root
+            RewriteRule ^$ /out/index.html [L]
+
+            # Existing files/folders
+            RewriteCond %{REQUEST_FILENAME} -f [OR]
+            RewriteCond %{REQUEST_FILENAME} -d
+            RewriteRule ^ - [L]
+
+            # Trailing slash for exported HTML routes
+            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.html -f
+            RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
+
+            # Serve exported HTML routes
+            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.html -f
+            RewriteRule ^(.+?)/$ /out/$1/index.html [L]
+
+            # Serve Next.js RSC .txt files
+            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.txt -f
+            RewriteRule ^(.+)\.txt$ /out/$1/index.txt [L]
+
+            # Serve static files from /out
+            RewriteCond %{DOCUMENT_ROOT}/out/$1 -f
+            RewriteRule ^(.*)$ /out/$1 [L]
+
+            ErrorDocument 404 /out/404.html
+            HTACCESS
