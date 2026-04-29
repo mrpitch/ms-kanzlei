@@ -77,24 +77,19 @@ jobs:
             # Root
             RewriteRule ^$ /out/index.html [L]
 
-            # Existing files/folders
+            # Existing files/folders (static assets, _next/, _optimized/, etc.)
             RewriteCond %{REQUEST_FILENAME} -f [OR]
             RewriteCond %{REQUEST_FILENAME} -d
             RewriteRule ^ - [L]
 
-            # Trailing slash for exported HTML routes
-            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.html -f
-            RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
+            # Remove trailing slash
+            RewriteRule ^(.+)/$ /$1 [R=301,L]
 
-            # Serve exported HTML routes
-            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.html -f
-            RewriteRule ^(.+?)/$ /out/$1/index.html [L]
+            # Serve exported page HTML
+            RewriteCond %{DOCUMENT_ROOT}/out/$1.html -f
+            RewriteRule ^([^./]+)$ /out/$1.html [L]
 
-            # Serve Next.js RSC .txt files
-            RewriteCond %{DOCUMENT_ROOT}/out/$1/index.txt -f
-            RewriteRule ^(.+)\.txt$ /out/$1/index.txt [L]
-
-            # Serve static files from /out
+            # Serve remaining static files from /out
             RewriteCond %{DOCUMENT_ROOT}/out/$1 -f
             RewriteRule ^(.*)$ /out/$1 [L]
 
