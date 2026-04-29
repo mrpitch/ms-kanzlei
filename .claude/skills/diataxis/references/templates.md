@@ -60,8 +60,8 @@ Create `apps/<pkg>/src/<file>.ts`:
 
 ```ts
 export const example = (input: string): string => {
-  return input.toUpperCase();
-};
+	return input.toUpperCase()
+}
 ```
 
 ## Step 3: [Verify]
@@ -118,8 +118,8 @@ pnpm <command>
 ```ts
 // concrete snippet
 export const example = (input: string): string => {
-  return input.toUpperCase();
-};
+	return input.toUpperCase()
+}
 ```
 
 ### 3. [Action verb phrase]
@@ -212,13 +212,13 @@ function functionName(arg: ArgType, opts?: Options): ReturnType
 ### Basic usage
 
 ```ts
-const result = functionName('hello');
+const result = functionName('hello')
 ```
 
 ### With options
 
 ```ts
-const result = functionName('hello', { flag: true });
+const result = functionName('hello', { flag: true })
 ```
 
 ## Errors
@@ -282,11 +282,11 @@ import { ComponentName } from '@/components/<ComponentName>';
 ### With form integration
 
 ```tsx
-import { useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form'
 
-const { register } = useForm();
+const { register } = useForm()
 
-<ComponentName {...register('field')} />;
+;<ComponentName {...register('field')} />
 ```
 
 ## Accessibility

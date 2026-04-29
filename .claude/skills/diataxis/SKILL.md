@@ -18,11 +18,11 @@ Each document serves exactly one purpose. Mixing types is the most common docume
 
 ## Scope in This Repo
 
-| Lives here                                 | Owned by Diataxis? | Notes                                    |
-| ------------------------------------------ | ------------------ | ---------------------------------------- |
-| `docs/` (repo root)                        | Yes                | Project docs (architecture, guides, etc) |
-| `.claude/skills/**`                        | **No**             | Skill definitions, not user docs         |
-| `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE` | **No**           | Standard meta files                      |
+| Lives here                                   | Owned by Diataxis? | Notes                                    |
+| -------------------------------------------- | ------------------ | ---------------------------------------- |
+| `docs/` (repo root)                          | Yes                | Project docs (architecture, guides, etc) |
+| `.claude/skills/**`                          | **No**             | Skill definitions, not user docs         |
+| `CHANGELOG.md`, `CONTRIBUTING.md`, `LICENSE` | **No**             | Standard meta files                      |
 
 ## When to Use
 
@@ -188,11 +188,11 @@ npx tsx .claude/skills/diataxis/scripts/generate-index.ts apps/<pkg>/docs
 
 ## Coexistence with Other Skills
 
-| Skill             | Boundary                                              |
-| ----------------- | ----------------------------------------------------- |
-| `code-review`     | Unrelated; don't trigger Diataxis                     |
-| `code-health-review` | Unrelated; don't trigger Diataxis                  |
-| `git-commit`      | Unrelated; don't trigger Diataxis                     |
+| Skill                | Boundary                          |
+| -------------------- | --------------------------------- |
+| `code-review`        | Unrelated; don't trigger Diataxis |
+| `code-health-review` | Unrelated; don't trigger Diataxis |
+| `git-commit`         | Unrelated; don't trigger Diataxis |
 
 ## References
 

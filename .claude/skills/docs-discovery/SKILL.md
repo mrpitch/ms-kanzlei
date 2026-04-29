@@ -33,38 +33,38 @@ For full frontmatter extraction, use the generate-index script — it outputs ti
 
 ```json
 [
-  {
-    "file": "docs/how-to/how-to-deploy-to-dev.md",
-    "folder": "docs/how-to",
-    "hasFrontmatter": true,
-    "frontmatter": {
-      "name": "How to deploy backend to dev",
-      "description": "Procedure to deploy the backend Lambda + CDK stacks to the dev environment.",
-      "tags": ["backend", "deploy", "cdk", "dev-environment"],
-      "kind": "how-to",
-      "status": "current",
-      "last_reviewed": "2026-04-24",
-      "authoritative": false
-    },
-    "titleFallback": null
-  },
-  {
-    "file": "docs/explanation/about-architecture.md",
-    "folder": "docs/explanation",
-    "hasFrontmatter": false,
-    "frontmatter": null,
-    "titleFallback": "About the BSI Portal Architecture"
-  }
+	{
+		"file": "docs/how-to/how-to-deploy-to-dev.md",
+		"folder": "docs/how-to",
+		"hasFrontmatter": true,
+		"frontmatter": {
+			"name": "How to deploy backend to dev",
+			"description": "Procedure to deploy the backend Lambda + CDK stacks to the dev environment.",
+			"tags": ["backend", "deploy", "cdk", "dev-environment"],
+			"kind": "how-to",
+			"status": "current",
+			"last_reviewed": "2026-04-24",
+			"authoritative": false
+		},
+		"titleFallback": null
+	},
+	{
+		"file": "docs/explanation/about-architecture.md",
+		"folder": "docs/explanation",
+		"hasFrontmatter": false,
+		"frontmatter": null,
+		"titleFallback": "About the BSI Portal Architecture"
+	}
 ]
 ```
 
-| Field            | Type                       | Description                                                        |
-| ---------------- | -------------------------- | ------------------------------------------------------------------ |
-| `file`           | `string`                   | Path relative to the project root                                  |
-| `folder`         | `string`                   | Parent directory of the file (relative to project root)            |
-| `hasFrontmatter` | `boolean`                  | `true` when a `---` frontmatter block was found and parsed         |
-| `frontmatter`    | `object \| null`           | Parsed YAML fields; `null` when `hasFrontmatter` is `false`        |
-| `titleFallback`  | `string \| null`           | Text of the first `# Heading`; `null` when frontmatter is present  |
+| Field            | Type             | Description                                                       |
+| ---------------- | ---------------- | ----------------------------------------------------------------- |
+| `file`           | `string`         | Path relative to the project root                                 |
+| `folder`         | `string`         | Parent directory of the file (relative to project root)           |
+| `hasFrontmatter` | `boolean`        | `true` when a `---` frontmatter block was found and parsed        |
+| `frontmatter`    | `object \| null` | Parsed YAML fields; `null` when `hasFrontmatter` is `false`       |
+| `titleFallback`  | `string \| null` | Text of the first `# Heading`; `null` when frontmatter is present |
 
 ## Ranking guidance
 

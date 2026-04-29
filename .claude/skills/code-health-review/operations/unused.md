@@ -51,7 +51,7 @@ pnpm knip --workspace <pkg> --reporter json > /tmp/knip.json
 Parse the JSON. Build a candidate list per file:
 
 ```ts
-[{ file, name, kind, line, knipCategory }];
+;[{ file, name, kind, line, knipCategory }]
 ```
 
 If the target was a single file, drop everything outside that file.

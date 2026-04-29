@@ -43,11 +43,19 @@ Always run with `--reporters json,console` (or add `json` to `.jscpd.json` tempo
 
 ```jsonc
 {
-  "format": "typescript",
-  "lines": 12,
-  "tokens": 80,
-  "duplicationA": { "sourceId": "apps/frontend/.../utils.ts", "start": { "line": 70 }, "end": { "line": 82 } },
-  "duplicationB": { "sourceId": "libs/common/.../helpers.ts", "start": { "line": 14 }, "end": { "line": 26 } },
+	"format": "typescript",
+	"lines": 12,
+	"tokens": 80,
+	"duplicationA": {
+		"sourceId": "apps/frontend/.../utils.ts",
+		"start": { "line": 70 },
+		"end": { "line": 82 },
+	},
+	"duplicationB": {
+		"sourceId": "libs/common/.../helpers.ts",
+		"start": { "line": 14 },
+		"end": { "line": 26 },
+	},
 }
 ```
 
@@ -56,7 +64,7 @@ Always run with `--reporters json,console` (or add `json` to `.jscpd.json` tempo
 Build candidates:
 
 ```ts
-[{ fileA, linesA: [start, end], fileB, linesB: [start, end], tokens, lines }];
+;[{ fileA, linesA: [start, end], fileB, linesB: [start, end], tokens, lines }]
 ```
 
 Filter:

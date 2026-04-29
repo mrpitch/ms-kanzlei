@@ -33,23 +33,23 @@ In this tutorial, you'll add a route that only authenticated users can access.
 Create `apps/frontend/src/pages/Profile.tsx`:
 
 ```tsx
-export const Profile = () => <h1>Profile</h1>;
+export const Profile = () => <h1>Profile</h1>
 ```
 ````
 
 ## Step 2: Wrap with Auth Guard
 
 ```tsx
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { ProtectedRoute } from '@/components/ProtectedRoute'
 
-<Route
-  path="/profile"
-  element={
-    <ProtectedRoute>
-      <Profile />
-    </ProtectedRoute>
-  }
-/>;
+;<Route
+	path="/profile"
+	element={
+		<ProtectedRoute>
+			<Profile />
+		</ProtectedRoute>
+	}
+/>
 ```
 
 ````
@@ -80,17 +80,17 @@ You can use Zustand, Redux Toolkit, or Jotai. Here's how to set up each:
 BSI Portal uses Zustand. Create `apps/frontend/src/stores/counterSlice.ts`:
 
 ```ts
-import { StateCreator } from 'zustand';
+import { StateCreator } from 'zustand'
 
 export interface CounterSlice {
-  count: number;
-  increment: () => void;
+	count: number
+	increment: () => void
 }
 
 export const createCounterSlice: StateCreator<CounterSlice> = (set) => ({
-  count: 0,
-  increment: () => set((s) => ({ count: s.count + 1 })),
-});
+	count: 0,
+	increment: () => set((s) => ({ count: s.count + 1 })),
+})
 ```
 ````
 
@@ -216,20 +216,20 @@ Ship the latest backend changes to the `dev` environment.
 
 ```ts
 export const handler = async (event) => {
-  console.log('Got event', event);
-  // …
-};
+	console.log('Got event', event)
+	// …
+}
 ```
 
 **Good:**
 
 ```ts
-import { logger } from '@bsi-portal/cdk-tools/lib/client';
+import { logger } from '@bsi-portal/cdk-tools/lib/client'
 
 export const handler = async (event) => {
-  logger.info('Got event', { event });
-  // …
-};
+	logger.info('Got event', { event })
+	// …
+}
 ```
 
 **Why:** Project convention forbids `console.*` in application code. Doc examples set the standard.
@@ -260,9 +260,9 @@ entry to the array. Save the file and restart the backend…
 
 ```ts
 interface FeatureFlag {
-  id: string;
-  defaultValue: boolean;
-  envOverrides?: Partial<Record<Environment, boolean>>;
+	id: string
+	defaultValue: boolean
+	envOverrides?: Partial<Record<Environment, boolean>>
 }
 ```
 ````
@@ -312,7 +312,7 @@ creates user
 ## `getUser`
 
 ```ts
-function getUser(id: string): Promise<User>;
+function getUser(id: string): Promise<User>
 ```
 ````
 
@@ -327,7 +327,7 @@ function getUser(id: string): Promise<User>;
 ## `deleteUser`
 
 ```ts
-function deleteUser(id: string): Promise<void>;
+function deleteUser(id: string): Promise<void>
 ```
 
 | Param | Type     | Required | Description |
@@ -353,8 +353,8 @@ const apiKey = 'sk-prod-xxxxxxxxxxxxxxxx';
 **Good:**
 
 ```ts
-const apiKey = process.env.BSI_VENDOR_API_KEY;
-if (!apiKey) throw new Error('BSI_VENDOR_API_KEY not set');
+const apiKey = process.env.BSI_VENDOR_API_KEY
+if (!apiKey) throw new Error('BSI_VENDOR_API_KEY not set')
 ```
 
 **Why:** Doc examples leak into copy-paste reality. Always model the real secret-handling pattern (env vars + SOPS).
