@@ -10,62 +10,76 @@ MS Kanzlei is a German law firm website built with Next.js 16, using static expo
 
 ```bash
 pnpm dev          # Start development server
-pnpm build        # Build for production (includes image optimization)
+pnpm build        # Build for production (includes image optimization + sitemap)
 pnpm start        # Serve the static export from ./out
-pnpm test:e2e     # Run Playwright e2e tests (webServer in config builds and serves app)
-pnpm test:e2e:ui  # Run Playwright e2e tests in UI mode for debugging
-pnpm lint         # Run ESLint
+pnpm check        # Run ESLint + TypeScript type-check together
+pnpm lint         # Run ESLint only
+pnpm typecheck    # Run tsc --noEmit only
 pnpm format       # Format code with Prettier
+pnpm test:e2e     # Run Playwright e2e tests (webServer builds + serves app)
+pnpm test:e2e:ui  # Run Playwright e2e tests in UI mode for debugging
 pnpm nuke         # Remove node_modules, lock file, .next, and out directories
 ```
 
 ## Architecture
 
-- next.js 16, typescript, shadcn, tailwindcss 4
+Next.js 16, TypeScript, shadcn/ui, Tailwind CSS v4, React 19.
+
+### Site Configuration
+
+All site-wide data lives in `src/lib/config.json` (typed via `src/lib/types.ts`): nav items, contact info, testimonials, and cookie consent settings. Components import this directly — it is the single source of truth for content that doesn't belong in MDX.
 
 ### Content System
 
-- MDX files in `/content/` define pages (home.mdx, ueber-uns.mdx, etc.)
-- `src/lib/mdx.ts` reads and parses MDX files with gray-matter frontmatter
-- `src/components/mdx-components.tsx` provides custom MDX rendering with next-mdx-remote
-- Dynamic routes via `src/app/[slug]/page.tsx` with `generateStaticParams()`
+- MDX files in `/content/` define pages (`home.mdx`, `arbeitsrecht.mdx`, etc.)
+- `src/lib/mdx.ts` reads files with gray-matter; exposes `getPosts()`, `getPostBySlug(slug)`
+- `src/components/mdx-components.tsx` provides `CustomMDX` wrapper (next-mdx-remote/rsc); registers `HeroSection` as a usable MDX component
+- MDX frontmatter fields: `title`, `description`, `icon` (Lucide icon name, e.g. `Briefcase`)
 
 ### Routing
 
-- `/` renders content/home.mdx
-- `/[slug]` renders matching content/\*.mdx file (excluding home)
+- `/` renders `content/home.mdx` (special-cased in `src/app/page.tsx`)
+- `/[slug]` renders matching `content/*.mdx` via `src/app/[slug]/page.tsx`
+- `home` slug is excluded from `generateStaticParams()`; pages `impressum` and `datenschutz` are excluded from the Rechtsgebiete cards on the home page
 - Static export generates all pages at build time
+
+### Icon Mapping
+
+Both `src/app/page.tsx` and `src/app/[slug]/page.tsx` maintain a local `iconMap` mapping frontmatter `icon` strings to Lucide components. When adding a new icon, update the map in both files.
 
 ### Styling
 
-- Tailwind CSS v4 with custom theme variables
-- Theme files in `src/lib/styles/` (variables-\*.css for different themes)
-- Currently using "gingerhero" theme (imported in globals.css)
-- To switch themes, change the import in `globals.css` (available: amethysthaze, bubblegum, candyland, gingerhero, nature, sageandsand, vintagepaper)
-- `cn()` utility in `src/lib/utils.ts` for class merging
-- Icons: use `lucide-react` for icons
+- Tailwind CSS v4 with custom CSS variables
+- `src/lib/styles/globals.css` — entry point; imports the theme and Tailwind
+- `src/lib/styles/variables-ms-kanzlei.css` — project theme (color tokens, radius, etc.)
+- `src/lib/styles/theme.css` — applies variables to Tailwind's design system
+- `src/lib/styles/fonts/` — font definitions referenced in `layout.tsx`
+- `cn()` utility in `src/lib/utils/cn.ts` for class merging
+- Icons: use `lucide-react`
 
 ### Image Optimization
 
-- Uses `next-export-optimize-images` for static image optimization
-- Config in `export-images.config.js` - converts PNG/JPG to WebP
-- Optimized images output to `_optimized/` directory
+- Uses `next-export-optimize-images` — converts PNG/JPG to WebP at build time
+- Config in `export-images.config.js`; optimized images output to `_optimized/`
+- Images live in `public/images/`
 
 ### Path Aliases
 
 ```
-@/*           → ./src/*
-@/components/* → ./src/components/*
-@/lib/*       → ./src/lib/*
-@/img/*       → ./public/img/*
+@/*              → ./src/*
+@/components/*   → ./src/components/*
+@/lib/*          → ./src/lib/*
+@/img/*          → ./public/images/*
 ```
 
-### Playwright MCP
+### Infrastructure (CDK)
 
-The project uses Playwright MCP via `.cursor/mcp.json` so the agent can drive a browser (navigate, snapshot, interact) and help author e2e tests. Restart Cursor after changing MCP config. With the app running (`pnpm dev` or `pnpm start`), the agent can open e.g. `http://localhost:3000` and use testing tools (e.g. generate locators, verify visibility). Browsers are shared with Playwright Test; run `pnpm exec playwright install chromium` if the MCP reports browsers not installed.
+AWS deployment infrastructure lives in `cdk/` with its own `CLAUDE.md`. Two stacks: ACM cert in `us-east-1`, main stack (S3 + CloudFront + Route53) in `eu-central-1`. GitHub Actions deploys via OIDC (no long-lived AWS keys).
 
 ## Key Files
 
-- `next.config.ts` - Static export config with image optimization
-- `src/app/layout.tsx` - Root layout with Nav and Footer
-- `src/lib/mdx.ts` - MDX file reading utilities
+- `next.config.ts` — static export config with image optimization
+- `src/app/layout.tsx` — root layout: Header, main, Footer, CookieConsent, ThemeProvider
+- `src/lib/config.json` — site data (nav, contact, cookie settings)
+- `src/lib/mdx.ts` — MDX file reading utilities
+- `src/components/mdx-components.tsx` — MDX component registry
