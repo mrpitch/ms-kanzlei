@@ -298,6 +298,20 @@ function handler(event) {
 			}),
 		)
 
+		// Allow CDK CLI to pass the CFN execution role to CloudFormation
+		deployRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: ['iam:PassRole'],
+				resources: [
+					`arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${props.regionMain}`,
+					`arn:aws:iam::${this.account}:role/cdk-hnb659fds-cfn-exec-role-${this.account}-${props.regionCert}`,
+				],
+				conditions: {
+					StringEquals: { 'iam:PassedToService': 'cloudformation.amazonaws.com' },
+				},
+			}),
+		)
+
 		// Outputs
 		new cdk.CfnOutput(this, 'BucketName', { value: bucket.bucketName })
 		new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId })
