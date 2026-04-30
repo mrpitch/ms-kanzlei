@@ -1,12 +1,14 @@
 name: Deploy (AWS) [disabled]
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       deploy_mode:
         description: What to deploy
         type: choice
-        options: [next, cdk, full]
+        options: [ next, cdk, full ]
         default: full
 
 permissions:
@@ -131,7 +133,7 @@ jobs:
           retention-days: 1
 
   resolve-infra-outputs:
-    needs: [detect-changes, deploy-cdk, build-next]
+    needs: [ detect-changes, deploy-cdk, build-next ]
     if: |
       always() &&
       (needs.detect-changes.outputs.run_cdk == 'true' || needs.detect-changes.outputs.run_next == 'true') &&
@@ -158,7 +160,7 @@ jobs:
           echo "distribution_id=${{ steps.outputs.outputs.distribution_id }}"
 
   publish-site:
-    needs: [detect-changes, build-next, resolve-infra-outputs]
+    needs: [ detect-changes, build-next, resolve-infra-outputs ]
     if: |
       always() &&
       needs.detect-changes.outputs.run_next == 'true' &&
@@ -215,7 +217,14 @@ jobs:
           fi
 
   notify-failure:
-    needs: [detect-changes, deploy-cdk, build-next, resolve-infra-outputs, publish-site]
+    needs:
+      [
+        detect-changes,
+        deploy-cdk,
+        build-next,
+        resolve-infra-outputs,
+        publish-site,
+      ]
     if: failure()
     runs-on: ubuntu-latest
     steps:

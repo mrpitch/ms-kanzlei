@@ -272,12 +272,20 @@ function handler(event) {
 			}),
 		)
 
-		// Allow workflow to read stack outputs for deployment
+		// CloudFormation permissions for CDK deploy and destroy
 		deployRole.addToPolicy(
 			new iam.PolicyStatement({
-				actions: ['cloudformation:DescribeStacks'],
+				actions: [
+					'cloudformation:DescribeStacks',
+					'cloudformation:DescribeStackEvents',
+					'cloudformation:DescribeStackResources',
+					'cloudformation:ListStackResources',
+					'cloudformation:GetTemplate',
+					'cloudformation:DeleteStack',
+				],
 				resources: [
 					`arn:aws:cloudformation:${props.regionMain}:${this.account}:stack/MsKanzleiStack/*`,
+					`arn:aws:cloudformation:${props.regionCert}:${this.account}:stack/MsKanzleiCertStack/*`,
 				],
 			}),
 		)
