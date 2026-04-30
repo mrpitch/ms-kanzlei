@@ -13,6 +13,7 @@ re-run the script after adding or moving files.
 - [How To Add A Page](how-to/how-to-add-a-page.md)
 - [How To Add An Icon](how-to/how-to-add-an-icon.md)
 - [How To Deploy To Aws](how-to/how-to-deploy-to-aws.md)
+- [How To Destroy AWS Infrastructure](how-to/how-to-destroy-aws-infrastructure.md)
 - [How To Switch Themes](how-to/how-to-switch-themes.md)
 
 ## Reference
