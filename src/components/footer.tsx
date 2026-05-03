@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, MapPin, Phone, Printer } from 'lucide-react'
 import { Container } from '@/components/ui/container'
 
 import { Logo } from '@/components/ui/logo'
@@ -36,6 +36,12 @@ export function Footer() {
 								<Phone className="h-4 w-4 shrink-0" />
 								<span>{contact.phone}</span>
 							</a>
+							{contact.fax && (
+								<div className="flex items-center gap-3">
+									<Printer className="h-4 w-4 shrink-0" />
+									<span>{contact.fax}</span>
+								</div>
+							)}
 							<a
 								href={`mailto:${contact.email}`}
 								className="flex items-center gap-3 transition-colors hover:text-foreground/80"

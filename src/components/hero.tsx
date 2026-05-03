@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Mail, MapPin, Phone, Printer } from 'lucide-react'
 import configJson from '@/lib/config.json'
 import { TConfig } from '@/lib/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -50,6 +50,14 @@ export function HeroSection({
 									</div>
 									<span>{contact.phone}</span>
 								</a>
+								{contact.fax && (
+									<div className="flex items-center gap-4 text-muted-foreground">
+										<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 dark:bg-secondary">
+											<Printer className="h-5 w-5 text-primary" />
+										</div>
+										<span>{contact.fax}</span>
+									</div>
+								)}
 								<a
 									href={`mailto:${contact.email}`}
 									className="group flex items-center gap-4 text-muted-foreground transition-colors hover:text-foreground"

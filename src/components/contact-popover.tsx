@@ -2,7 +2,7 @@
 import { usePathname } from 'next/navigation'
 import configJson from '@/lib/config.json'
 import { TConfig } from '@/lib/types'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Mail, MapPin, Phone, Printer } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -43,6 +43,14 @@ export function ContactPopover() {
 							</span>
 							<span>{contact.phone}</span>
 						</a>
+						{contact.fax && (
+							<span className="flex items-center gap-4 text-muted-foreground">
+								<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-secondary">
+									<Printer className="h-5 w-5 text-primary" />
+								</span>
+								<span>{contact.fax}</span>
+							</span>
+						)}
 						<a
 							href={`mailto:${contact.email}`}
 							className="group flex items-center gap-4 text-muted-foreground transition-colors hover:text-foreground"

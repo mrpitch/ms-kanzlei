@@ -26,11 +26,13 @@
 		}
 	],
 	"contact": {
-		"phone": "+491234567890",
+		"phone": "+49 89 452 211 73",
+		"mobile": "+49 151 157 442 21",
+		"fax": "+49 89 452 211 74",
 		"email": "info@ms-kanzlei.de",
-		"street": "Schleißheimerstraße 129",
-		"zip": "80797",
-		"city": "München-Schwabing"
+		"street": "Ernst-Platz-Straße 2i",
+		"zip": "80992",
+		"city": "München"
 	},
 	"testimonials": [
 		{
@@ -38,7 +40,7 @@
 			"title": "Rechtsanwalt",
 			"company": "MS Kanzlei",
 			"companyUrl": "https://ms-kanzlei.de",
-			"text": "Gravida quam mi erat tortor neque molestie. Auctor aliquet at porttitor a enim nunc suscipit tincidunt nunc. Et non lorem tortor posuere. Nunc eu scelerisque interdum eget tellus non nibh scelerisque bibendum.",
+			"text": "Rechtliche Fragen erfordern Klarheit, Vertrauen und eine sorgfältige Einschätzung. Ich begleite meine Mandantinnen und Mandanten persönlich, verlässlich und mit Blick für das Wesentliche. Mit Erfahrung und Engagement vertrete ich Ihre Interessen und stehe Ihnen auf dem Weg zu einer guten Lösung verbindlich zur Seite.",
 			"image": "/images/rechtsanwalt-mark-schilling.jpg"
 		}
 	],

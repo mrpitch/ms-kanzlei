@@ -1,5 +1,7 @@
 type TContact = {
 	phone: string
+	mobile?: string
+	fax?: string
 	email: string
 	street: string
 	zip: string
